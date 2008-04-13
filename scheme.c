@@ -3,42 +3,32 @@
 
 /***********************************************************
 
-it's been a while since I last coded in this file.
+ok, now onto the parse operation
 
-I think the first order of business should be commenting the functions
-so I can get a better idea of what I was trying to accomplish. Given
-the nature of C's "know about it before you can use it" going top to
-bottom should present no surprises.
+to do this, I will simply use the C stack and recursive calls
+to the parse function. it will take in a string and return the
+equivalent atom.
 
+the trick is allowing a recursive parse to destructively modify
+the string pointer in order to parse the string left to right
 
-on pointers
-
-the sematics of the cons statement cause it to require actual memory
-addresses. can this be faked with clever copying? perhaps.
-
-(define x '(a b c))
-
-(define y (cons 'z (cdr x)))
-
-(set-car! (cdr x) 'd)
-
-y -> (z d c)
+the way I solved this before was a pointer to a string (which
+was a pointer to a char). This is probably the best way to do this
 
 ***********************************************************/
 
 //typedef enum { cons, integer, function } type;
 
-// a test struct, appears to be a linked list
-typedef struct test {
-	int x;
-	struct test *y;
-} test;
+typedef enum {
+	tcons, tint, tchar, tfun, tnull
+} type;
 
 // atom struct with t being the type (as an enum) and
 // a union that contains either a cons (named cons - confusing)
 // just made a change that the enums begin with t, so a cons is a tcons
 typedef struct atom {
-	enum { tcons, tint, tchar, tfun, tnull } t;
+	//enum { tcons, tint, tchar, tfun, tnull } t;
+	type t;
 	union {
 		struct { struct atom *car, *cdr; } cons;
 		int i;
@@ -46,74 +36,77 @@ typedef struct atom {
 	};
 } atom;
 
+atom *newatom(type x) {
+	atom *ret = (atom*) malloc(sizeof(atom));
+	ret->t = x;
+	return ret;
+}
+
+
 // the cons operation, allocates mem and applies the cons
-atom cons (atom car, atom cdr) {
-	atom ret;
-	ret.t = tcons;
-	ret.cons.car = car;
-	ret.cons.cdr = cdr;
+atom *cons (atom *car, atom *cdr) {
+	atom *ret = newatom(tcons);
+	ret->cons.car = car;
+	ret->cons.cdr = cdr;
 	return ret;
 }
 
 // converts the int to an atom
-atom conv (int val) {
-	atom ret;
-	ret.t = tint;
-	ret.i = val;
+atom *conv (int val) {
+	atom *ret = newatom(tint);
+	ret->i = val;
 	return ret;
 }
 
 // returns the null 
-atom null () {
-	atom ret;
-	ret.t = tnull;
-	return ret;
+atom *null () {
+	return newatom(tnull);
 }
 
-atom parse (char **input) {
-	atom *ret = (atom*) malloc(sizeof(atom));
+
+atom *parse (char **input) {
+	//atom *ret = (atom*) malloc(sizeof(atom));
 	while (**input == ' ') *input++;
 	if (**input == '(') {
 		// it's a list
-		ret->t = cons;
+		//ret->t = cons;
 		*input += 1;
+		atom *ret = newatom(tcons);
+		printf("begin list read\n");
 		ret->cons.car = parse(input);
-		ret->cons.cdr = fnull();
-		printf("YEAHH! \"%s\"\n", *input);
+		printf("car read, reading cdr\n");
+		ret->cons.cdr = null();
+		printf("end list read\n");
+		
+		return ret;
 	}
 	else {
-		ret->t = integer;
-		
-		char *temp = *input;
+		//ret->t = integer;
+		atom *ret = newatom(tint);
 		ret->i = atoi(*input);
 		printf("%i\n", *(*input+1));
 		while (**input <= 57 && **input >= 48) *input++;
 		printf("YEAHH! \"%s\"\n", *input);
 	}
-	return ret;
 }
 
 void print (atom *x) {
-	if (x->t == cons) {
+	if (x->t == tcons) {
 		printf("(");
 		print (x->cons.car);
-		if (x->cons.cdr->t == cons || x->cons.cdr->t == null)
-			print (x->cons.cdr);
-		else {
-			printf (". ");
-			print (x->cons.cdr);
-		}
+		printf (" . ");
+		print (x->cons.cdr);
 		printf(")");
 	}
 	else {
-		if (x->t == integer)
-			printf("%i ", x->i);
+		if (x->t == tint)
+			printf("%i", x->i);
 	}
 }
-	
+
 
 int main (int argc, const char * argv[]) {
-	char readb[256];
+	/*char readb[256];
 	
 	char *z = "(1 2 3)";
 	
@@ -121,7 +114,10 @@ int main (int argc, const char * argv[]) {
 	print(x);
 
     printf("arc> ");
-	//gets(readb);
+	//gets(readb);*/
+	
+	atom *x = cons(conv(2), conv(3));
+	print(x);
 	
     return 0;
 }
