@@ -5,18 +5,27 @@
 
 it's been a while since I last coded in this file.
 
+I think the first order of business should be commenting the functions
+so I can get a better idea of what I was trying to accomplish. Given
+the nature of C's "know about it before you can use it" going top to
+bottom should present no surprises.
+
 
 ***********************************************************/
 
 //typedef enum { cons, integer, function } type;
 
+// a test struct, appears to be a linked list
 typedef struct test {
 	int x;
 	struct test *y;
 } test;
 
+// atom struct with t being the type (as an enum) and
+// a union that contains either a cons (named cons - confusing)
+// just made a change that the enums begin with t, so a cons is a tcons
 typedef struct atom {
-	enum { cons, integer, character, function, nil } t;
+	enum { tcons, tint, tchar, tfun, tnull } t;
 	union {
 		struct { struct atom *car, *cdr; } cons;
 		int i;
@@ -24,14 +33,16 @@ typedef struct atom {
 	};
 } atom;
 
-atom *fcons (atom *car, atom *cdr) {
+// the cons operation, allocates mem and applies the cons
+atom *cons (atom *car, atom *cdr) {
 	atom *ret = (atom*) malloc(sizeof(atom));
-	ret->t = cons;
+	ret->t = tcons;
 	ret->cons.car = car;
 	ret->cons.cdr = cdr;
 	return ret;
 }
 
+// converts the int to an atom
 atom *conv (int val) {
 	atom *ret = (atom*) malloc(sizeof(atom));
 	ret->t = integer;
@@ -39,9 +50,10 @@ atom *conv (int val) {
 	return ret;
 }
 
-atom *fnil () {
+// returns the null 
+atom *null () {
 	atom *ret = (atom*) malloc(sizeof(atom));
-	ret->t = nil;
+	ret->t = null;
 	return ret;
 }
 
@@ -53,7 +65,7 @@ atom *parse (char **input) {
 		ret->t = cons;
 		*input += 1;
 		ret->cons.car = parse(input);
-		ret->cons.cdr = fnil();
+		ret->cons.cdr = fnull();
 		printf("YEAHH! \"%s\"\n", *input);
 	}
 	else {
@@ -72,7 +84,7 @@ void print (atom *x) {
 	if (x->t == cons) {
 		printf("(");
 		print (x->cons.car);
-		if (x->cons.cdr->t == cons || x->cons.cdr->t == nil)
+		if (x->cons.cdr->t == cons || x->cons.cdr->t == null)
 			print (x->cons.cdr);
 		else {
 			printf (". ");
@@ -138,5 +150,5 @@ int main (int argc, const char * argv[]) {
  * right off the bat I realize that I need a null, wait I don't
  * C provides a null pointer for me :-/
  * my first instict was right, I do need a null. This needs to be an atom.
- * since this is SUPPOSED to be Arc, I'll call it nil
+ * since this is SUPPOSED to be Arc, I'll call it null
 **/
