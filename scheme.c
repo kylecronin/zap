@@ -11,6 +11,19 @@ the nature of C's "know about it before you can use it" going top to
 bottom should present no surprises.
 
 
+on pointers
+
+the sematics of the cons statement cause it to require actual memory
+addresses. can this be faked with clever copying? perhaps.
+
+(define x '(a b c))
+
+(define y (cons 'z (cdr x)))
+
+(set-car! (cdr x) 'd)
+
+y -> (z d c)
+
 ***********************************************************/
 
 //typedef enum { cons, integer, function } type;
@@ -34,30 +47,30 @@ typedef struct atom {
 } atom;
 
 // the cons operation, allocates mem and applies the cons
-atom *cons (atom *car, atom *cdr) {
-	atom *ret = (atom*) malloc(sizeof(atom));
-	ret->t = tcons;
-	ret->cons.car = car;
-	ret->cons.cdr = cdr;
+atom cons (atom car, atom cdr) {
+	atom ret;
+	ret.t = tcons;
+	ret.cons.car = car;
+	ret.cons.cdr = cdr;
 	return ret;
 }
 
 // converts the int to an atom
-atom *conv (int val) {
-	atom *ret = (atom*) malloc(sizeof(atom));
-	ret->t = integer;
-	ret->i = val;
+atom conv (int val) {
+	atom ret;
+	ret.t = tint;
+	ret.i = val;
 	return ret;
 }
 
 // returns the null 
-atom *null () {
-	atom *ret = (atom*) malloc(sizeof(atom));
-	ret->t = null;
+atom null () {
+	atom ret;
+	ret.t = tnull;
 	return ret;
 }
 
-atom *parse (char **input) {
+atom parse (char **input) {
 	atom *ret = (atom*) malloc(sizeof(atom));
 	while (**input == ' ') *input++;
 	if (**input == '(') {
