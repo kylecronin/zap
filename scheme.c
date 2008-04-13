@@ -15,6 +15,22 @@ the string pointer in order to parse the string left to right
 the way I solved this before was a pointer to a string (which
 was a pointer to a char). This is probably the best way to do this
 
+OK, new parse problem
+
+this one is about the parsing of a list. any other atom can be parsed
+with one "pass", but it's the list that must be done recursively.
+
+- read '(', know we're dealing with a list or a pair
+- consume whitespace 
+- check for ')' - if it is, it's empty list/null
+- parse car
+- consume whitespace
+- check for ')' - if it is, it's a list of 1 element
+- check for '.' - if it is, it's a dotted pair
+- insert fake '(' right before pointer
+- parse as a new list
+
+
 ***********************************************************/
 
 //typedef enum { cons, integer, function } type;
@@ -63,30 +79,53 @@ atom *null () {
 	return newatom(tnull);
 }
 
+/*
+- read '(', know we're dealing with a list or a pair
+- consume whitespace 
+- check for ')' - if it is, it's empty list/null
+- parse car
+- consume whitespace
+- check for ')' - if it is, it's a list of 1 element
+- check for '.' - if it is, it's a dotted pair
+- insert fake '(' right before pointer
+- parse as a new list
+*/
 
 atom *parse (char **input) {
-	//atom *ret = (atom*) malloc(sizeof(atom));
-	while (**input == ' ') *input++;
+	while (**input == ' ') (*input)++;
 	if (**input == '(') {
-		// it's a list
-		//ret->t = cons;
-		*input += 1;
+		(*input)++;
 		atom *ret = newatom(tcons);
-		printf("begin list read\n");
 		ret->cons.car = parse(input);
-		printf("car read, reading cdr\n");
-		ret->cons.cdr = null();
-		printf("end list read\n");
-		
+		while (**input == ' ') (*input)++;
+		if (**input == ')')
+			ret->cons.cdr = null();
+		else {
+			if (**input == '.') {
+				(*input)++;
+				while (**input == ' ') (*input)++;
+				ret->cons.cdr = parse(input);
+				while (**input == ' ') (*input)++;
+				if (**input == ')')
+					(*input)++;
+				else
+					printf("parse error: invalid dotted pair\n");
+			}
+			else {
+				(*input)--;
+				**input = '(';
+				ret->cons.cdr = parse(input);
+			}	
+		}	
 		return ret;
 	}
 	else {
 		//ret->t = integer;
 		atom *ret = newatom(tint);
 		ret->i = atoi(*input);
-		printf("%i\n", *(*input+1));
-		while (**input <= 57 && **input >= 48) *input++;
-		printf("YEAHH! \"%s\"\n", *input);
+		while (**input >= 48 && **input <= 57)
+			(*input)++;
+		return ret;
 	}
 }
 
@@ -106,58 +145,13 @@ void print (atom *x) {
 
 
 int main (int argc, const char * argv[]) {
-	/*char readb[256];
+		
+	char buff[20] = "(1 2 3 4 5)";
+	char *test = buff;
 	
-	char *z = "(1 2 3)";
-	
-	atom *x = parse(&z);
-	print(x);
-
-    printf("arc> ");
-	//gets(readb);*/
-	
-	atom *x = cons(conv(2), conv(3));
+	atom *x = parse(&test);
 	print(x);
 	
     return 0;
 }
 
-/**
- * This is my super experimental version
- *
- * this is a git test
- *
- * hello there
- *
- * Gaah, it's tough to come up with a way to represent all that's required in memory
- * without resorting to some ugly hacks. Obviously every object needs a type section
- * and a data section, but it's tough to find a flexible way to implement the data
- * section. This would really be aided with a type hierarchy.
- *
- * I could create my own ad-hoc version, I guess. I would have to use some pointer
- * voodoo, but it could be done.
- *
- * So let it be written, so let it be done. I have something basic which might work.
- * I think I can even have the pointer point to a C int for the int, a C char for a
- * char, etc.
- *
- * Totally by accident I discovered the best way to do this - unions! This enables
- * me to define a union with all the possible data elements that I want!
- *
- * OK, so I have something that might work
- *
- * Now, for some basics in reading in/out the data
- * we'll use the C function stack with recursive calls
- * first, discern what sort of API will be needed
- * everything will be read in "inert" at first
- * perhaps later some sort of namespace translation can be added
- * ok, so since we're dealing with numbers as the only atoms, we
- * will test on an input like this:
- *
- * (1 (2 3 ((4 5) 6 () 7)))
- *
- * right off the bat I realize that I need a null, wait I don't
- * C provides a null pointer for me :-/
- * my first instict was right, I do need a null. This needs to be an atom.
- * since this is SUPPOSED to be Arc, I'll call it null
-**/
