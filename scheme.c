@@ -92,7 +92,16 @@ atom *null () {
 
 seeing the relative simplicity in an iterative solution to the print
 I've decided to attempt to both fix and refactor this function with
-that same iterative process of reading a list
+that same iterative process of reading a list:
+
+- read '(', know we're dealing with a list or a pair
+- consume whitespace
+- check for ')', if it is return null
+- have two pointers, head and temp, head pointing to the head
+- begin read loop
+	- 
+	- is next ')'?
+		- yes: end loop
 
 
 */
@@ -180,12 +189,15 @@ void print (atom *x) {
 
 
 int main (int argc, const char * argv[]) {
-		
-	char buff[20] = "(1 2 (3 4))";
-	char *test = buff;
+	char buff[256];
+	char *p = buff;
 	
-	atom *x = parse(&test);
-	print(x);
+	for (;;) {
+		printf("> ");
+		gets(buff);
+		print(parse(&p));
+		printf("\n");
+	}
 	
     return 0;
 }
