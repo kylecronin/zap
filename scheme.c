@@ -129,6 +129,8 @@ atom *parse (char **input) {
 	}
 }
 
+//lala
+
 void print (atom *x) {
 	if (x->t == tcons) {
 		printf("(");
