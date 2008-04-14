@@ -89,6 +89,12 @@ atom *null () {
 - check for '.' - if it is, it's a dotted pair
 - insert fake '(' right before pointer
 - parse as a new list
+
+seeing the relative simplicity in an iterative solution to the print
+I've decided to attempt to both fix and refactor this function with
+that same iterative process of reading a list
+
+
 */
 
 atom *parse (char **input) {
@@ -171,24 +177,11 @@ void print (atom *x) {
 	}
 }
 
-/*void print (atom *x) {
-	if (x->t == tcons) {
-		printf("(");
-		print (x->cons.car);
-		printf (" . ");
-		print (x->cons.cdr);
-		printf(")");
-	}
-	else {
-		if (x->t == tint)
-			printf("%i", x->i);
-	}
-}*/
 
 
 int main (int argc, const char * argv[]) {
 		
-	char buff[20] = "(1 2 3 4 5)";
+	char buff[20] = "(1 2 (3 4))";
 	char *test = buff;
 	
 	atom *x = parse(&test);
