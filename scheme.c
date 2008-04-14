@@ -129,9 +129,49 @@ atom *parse (char **input) {
 	}
 }
 
-//lala
+/*
+
+OK, we're sort of in a pickle here because of the list. The
+easiest thing to do is to print it recursively, but this would
+result in unwanted parenthesis. I guess the best way to do this
+would be to create a loop instead
+
+- if atom, print atom
+- if list, print open paren '(' and enter list printing loop:
+	- print car
+	- is cdr null?
+		- yes: end loop
+		- no: is cdr cons?
+			- no: print dot '.', print cdr, end loop
+			- yes: set head to cdr, continue loop
+- print close paren ')'
+
+*/
 
 void print (atom *x) {
+	if (x->t == tcons) {
+		printf("(");
+		print(x->cons.car);
+		while (x->cons.cdr->t == tcons) {
+			x = x->cons.cdr;
+			printf(" ");
+			print(x->cons.car);
+		}
+		if (x->cons.cdr->t != tnull) {
+			printf(" . ");
+			print(x->cons.cdr);
+		}
+		printf(")");
+	}
+	else {
+		switch (x->t) {
+			case tnull: printf("()"); break;
+			case tint: printf("%i", x->i); break;
+		}
+	}
+}
+
+/*void print (atom *x) {
 	if (x->t == tcons) {
 		printf("(");
 		print (x->cons.car);
@@ -143,7 +183,7 @@ void print (atom *x) {
 		if (x->t == tint)
 			printf("%i", x->i);
 	}
-}
+}*/
 
 
 int main (int argc, const char * argv[]) {
