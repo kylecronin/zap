@@ -190,11 +190,12 @@ void print (atom *x) {
 
 int main (int argc, const char * argv[]) {
 	char buff[256];
-	char *p = buff;
+	char *p;
 	
 	for (;;) {
 		printf("> ");
 		gets(buff);
+		p = buff;
 		print(parse(&p));
 		printf("\n");
 	}
