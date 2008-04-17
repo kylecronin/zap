@@ -116,15 +116,32 @@ that same iterative process of reading a list:
 
 */
 
+void cw (char **p)
+{
+	while (**p == ' ') (*p)++;
+}
+
 atom *parse (char **input)
 {
-	while (**input == ' ') (*input)++;
+	// consume initial whitespace
+	cw(input);
+	
+	// if the first character is '(', we're reading a list
 	if (**input == '(')
 	{
-		(*input)++;
+		// increment pointer, consume whitespace
+		(*input)++; cw(input);
+		
+		// if we encounter ')', we've read a null
+		if (**input == ')')
+			return newatom(tnull);
+		
+		// we now know we're returning a cons object	
 		atom *ret = newatom(tcons);
+		
+		// read in the car via parse
 		ret->cons.car = parse(input);
-		while (**input == ' ') (*input)++;
+		cw(input);
 		if (**input == ')')
 			ret->cons.cdr = null();
 		else
@@ -132,9 +149,9 @@ atom *parse (char **input)
 			if (**input == '.')
 			{
 				(*input)++;
-				while (**input == ' ') (*input)++;
+				cw(input);
 				ret->cons.cdr = parse(input);
-				while (**input == ' ') (*input)++;
+				cw(input);
 				if (**input == ')')
 					(*input)++;
 				else
@@ -145,6 +162,11 @@ atom *parse (char **input)
 				(*input)--;
 				**input = '(';
 				ret->cons.cdr = parse(input);
+				cw(input);
+				if (**input == ')')
+					(*input)++;
+				else
+					printf("parse error: invalid list");
 			}	
 		}	
 		return ret;
