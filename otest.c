@@ -10,14 +10,23 @@ typedef struct {
 	int size;
 } orange;
 
+int square (int x) {
+	return x*x;
+}
+
+int squid (int x) {
+	return x*2;
+}
+
 int main () {
-	orange a;
-	a.f.color = 7;
-	a.size = 10;
 	
-	fruit *b = (fruit *) &a;
+	int (*hello)(int) = square;
 	
-	printf("%i\n", b->color);
+	printf("%i\n", sizeof(square));
+	
+
 	
 	return 0;
+	
 }
+
