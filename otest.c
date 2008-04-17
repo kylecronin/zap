@@ -9,8 +9,8 @@ typedef struct {
 
 int main () {
 	orange a;
-	orange.f.color = 7;
-	orange.size = 10;
+	a.f.color = 7;
+	a.size = 10;
 	
 	fruit *b = (fruit *) &a;
 	
