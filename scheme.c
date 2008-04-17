@@ -5,6 +5,8 @@
 
 ok, now onto the parse operation
 
+it is 2008-04-16
+
 to do this, I will simply use the C stack and recursive calls
 to the parse function. it will take in a string and return the
 equivalent atom.
@@ -12,8 +14,10 @@ equivalent atom.
 the trick is allowing a recursive parse to destructively modify
 the string pointer in order to parse the string left to right
 
-the way I solved this before was a pointer to a string (which
-was a pointer to a char). This is probably the best way to do this
+the way I solved this before was a pointer to a string (which was a pointer to
+a char). This is probably the best way to do this
+
+ls
 
 OK, new parse problem
 
@@ -35,14 +39,16 @@ with one "pass", but it's the list that must be done recursively.
 
 //typedef enum { cons, integer, function } type;
 
-typedef enum {
+typedef enum
+{
 	tcons, tint, tchar, tfun, tnull
 } type;
 
 // atom struct with t being the type (as an enum) and
 // a union that contains either a cons (named cons - confusing)
 // just made a change that the enums begin with t, so a cons is a tcons
-typedef struct atom {
+typedef struct atom
+{
 	//enum { tcons, tint, tchar, tfun, tnull } t;
 	type t;
 	union {
@@ -52,7 +58,8 @@ typedef struct atom {
 	};
 } atom;
 
-atom *newatom(type x) {
+atom *newatom(type x)
+{
 	atom *ret = (atom*) malloc(sizeof(atom));
 	ret->t = x;
 	return ret;
@@ -60,7 +67,8 @@ atom *newatom(type x) {
 
 
 // the cons operation, allocates mem and applies the cons
-atom *cons (atom *car, atom *cdr) {
+atom *cons (atom *car, atom *cdr)
+{
 	atom *ret = newatom(tcons);
 	ret->cons.car = car;
 	ret->cons.cdr = cdr;
@@ -68,14 +76,16 @@ atom *cons (atom *car, atom *cdr) {
 }
 
 // converts the int to an atom
-atom *conv (int val) {
+atom *conv (int val)
+{
 	atom *ret = newatom(tint);
 	ret->i = val;
 	return ret;
 }
 
 // returns the null 
-atom *null () {
+atom *null ()
+{
 	return newatom(tnull);
 }
 
@@ -106,17 +116,21 @@ that same iterative process of reading a list:
 
 */
 
-atom *parse (char **input) {
+atom *parse (char **input)
+{
 	while (**input == ' ') (*input)++;
-	if (**input == '(') {
+	if (**input == '(')
+	{
 		(*input)++;
 		atom *ret = newatom(tcons);
 		ret->cons.car = parse(input);
 		while (**input == ' ') (*input)++;
 		if (**input == ')')
 			ret->cons.cdr = null();
-		else {
-			if (**input == '.') {
+		else
+		{
+			if (**input == '.')
+			{
 				(*input)++;
 				while (**input == ' ') (*input)++;
 				ret->cons.cdr = parse(input);
@@ -126,7 +140,8 @@ atom *parse (char **input) {
 				else
 					printf("parse error: invalid dotted pair\n");
 			}
-			else {
+			else
+			{
 				(*input)--;
 				**input = '(';
 				ret->cons.cdr = parse(input);
@@ -134,7 +149,8 @@ atom *parse (char **input) {
 		}	
 		return ret;
 	}
-	else {
+	else
+	{
 		//ret->t = integer;
 		atom *ret = newatom(tint);
 		ret->i = atoi(*input);
@@ -163,23 +179,29 @@ would be to create a loop instead
 
 */
 
-void print (atom *x) {
-	if (x->t == tcons) {
+void print (atom *x)
+{
+	if (x->t == tcons)
+	{
 		printf("(");
 		print(x->cons.car);
-		while (x->cons.cdr->t == tcons) {
+		while (x->cons.cdr->t == tcons)
+		{
 			x = x->cons.cdr;
 			printf(" ");
 			print(x->cons.car);
 		}
-		if (x->cons.cdr->t != tnull) {
+		if (x->cons.cdr->t != tnull)
+		{
 			printf(" . ");
 			print(x->cons.cdr);
 		}
 		printf(")");
 	}
-	else {
-		switch (x->t) {
+	else
+	{
+		switch (x->t)
+		{
 			case tnull: printf("()"); break;
 			case tint: printf("%i", x->i); break;
 		}
@@ -188,11 +210,13 @@ void print (atom *x) {
 
 
 
-int main (int argc, const char * argv[]) {
+int main (int argc, const char * argv[])
+{
 	char buff[256];
 	char *p;
 	
-	for (;;) {
+	for (;;)
+	{
 		printf("> ");
 		gets(buff);
 		p = buff;
