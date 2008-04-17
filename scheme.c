@@ -116,10 +116,9 @@ that same iterative process of reading a list:
 
 */
 
-void cw (char **p)
-{
-	while (**p == ' ') (*p)++;
-}
+void cw (char **p) { while (**p == ' ') (*p)++; }
+void ip (char **p) { (*p)++; }
+void dp (char **p) { (*p)--; }
 
 atom *parse (char **input)
 {
@@ -130,7 +129,7 @@ atom *parse (char **input)
 	if (**input == '(')
 	{
 		// increment pointer, consume whitespace
-		(*input)++; cw(input);
+		ip(input); cw(input);
 		
 		// if we encounter ')', we've read a null
 		if (**input == ')')
@@ -148,23 +147,23 @@ atom *parse (char **input)
 		{
 			if (**input == '.')
 			{
-				(*input)++;
+				ip(input);
 				cw(input);
 				ret->cons.cdr = parse(input);
 				cw(input);
 				if (**input == ')')
-					(*input)++;
+					ip(input);
 				else
 					printf("parse error: invalid dotted pair\n");
 			}
 			else
 			{
-				(*input)--;
+				dp(input);
 				**input = '(';
 				ret->cons.cdr = parse(input);
 				cw(input);
 				if (**input == ')')
-					(*input)++;
+					ip(input);
 				else
 					printf("parse error: invalid list");
 			}	
@@ -177,7 +176,7 @@ atom *parse (char **input)
 		atom *ret = newatom(tint);
 		ret->i = atoi(*input);
 		while (**input >= 48 && **input <= 57)
-			(*input)++;
+			ip(input);
 		return ret;
 	}
 }
