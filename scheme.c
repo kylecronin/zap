@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/***********************************************************
+/*
+**********************************************************
 
 ok, now onto the parse operation
 
 it is 2008-04-16
 
-to do this, I will simply use the C stack and recursive calls
-to the parse function. it will take in a string and return the
-equivalent atom.
+to do this, I will simply use the C stack and recursive calls to the parse
+function. it will take in a string and return the equivalent atom.
 
-the trick is allowing a recursive parse to destructively modify
-the string pointer in order to parse the string left to right
+the trick is allowing a recursive parse to destructively modify the string
+pointer in order to parse the string left to right
 
 the way I solved this before was a pointer to a string (which was a pointer to
 a char). This is probably the best way to do this
@@ -21,8 +21,8 @@ ls
 
 OK, new parse problem
 
-this one is about the parsing of a list. any other atom can be parsed
-with one "pass", but it's the list that must be done recursively.
+this one is about the parsing of a list. any other atom can be parsed with one
+"pass", but it's the list that must be done recursively.
 
 - read '(', know we're dealing with a list or a pair
 - consume whitespace 
@@ -35,7 +35,8 @@ with one "pass", but it's the list that must be done recursively.
 - parse as a new list
 
 
-***********************************************************/
+**********************************************************
+*/
 
 //typedef enum { cons, integer, function } type;
 
@@ -112,46 +113,55 @@ that same iterative process of reading a list:
 	- 
 	- is next ')'?
 		- yes: end loop
+		
 
 
 */
 
-void cw (char **p) { while (**p == ' ') (*p)++; }
+char **cw (char **p)
+{
+	while (**p == ' ') (*p)++;
+	return p;
+}
+
 void ip (char **p) { (*p)++; }
 void dp (char **p) { (*p)--; }
 
+
+
 atom *parse (char **input)
-{
-	// consume initial whitespace
-	cw(input);
-	
+{	
 	// if the first character is '(', we're reading a list
-	if (**input == '(')
+	if (**cw(input) == '(')
 	{
 		// increment pointer, consume whitespace
-		ip(input); cw(input);
+		ip(input);
 		
 		// if we encounter ')', we've read a null
-		if (**input == ')')
+		if (**cw(input) == ')')
+		{
+			ip(input);
 			return newatom(tnull);
+		}
 		
 		// we now know we're returning a cons object	
 		atom *ret = newatom(tcons);
 		
 		// read in the car via parse
 		ret->cons.car = parse(input);
-		cw(input);
-		if (**input == ')')
+		
+		// if we encounter ')', we've read a list with 1 element
+		if (**cw(input) == ')')
 			ret->cons.cdr = null();
+			
+		// otherwise we'ver read in a pair or a list
 		else
 		{
 			if (**input == '.')
 			{
 				ip(input);
-				cw(input);
 				ret->cons.cdr = parse(input);
-				cw(input);
-				if (**input == ')')
+				if (**cw(input) == ')')
 					ip(input);
 				else
 					printf("parse error: invalid dotted pair\n");
@@ -161,11 +171,10 @@ atom *parse (char **input)
 				dp(input);
 				**input = '(';
 				ret->cons.cdr = parse(input);
-				cw(input);
-				if (**input == ')')
+				if (**cw(input) == ')')
 					ip(input);
 				else
-					printf("parse error: invalid list");
+					printf("parse error: invalid list [ read '%s' ]\n", *input);
 			}	
 		}	
 		return ret;
@@ -228,6 +237,7 @@ void print (atom *x)
 		}
 	}
 }
+
 
 
 
