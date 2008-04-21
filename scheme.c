@@ -5,6 +5,8 @@
 
 ok, now onto the parse operation
 
+git test
+
 it is 2008-04-16
 
 to do this, I will simply use the C stack and recursive calls
