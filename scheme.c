@@ -4,47 +4,34 @@
 /*
 **********************************************************
 
-ok, now onto the parse operation
-now we're in michelle branch
-I forgot - I hate michelle branch
+well it's been several days since I last worked on this stuff. in that time I have learned some more interesting things about C structs - enough to make me want to try this again. basically, if you have a pointer to a struct, you can convert that pointer seamlessly to one to the first item in the struct. this has the advantage of allowing an object-like hierarchy.
 
+each type will have its own typedef. the atom typedef will be the supertype that will be used to extend all the other types.
 
-right back at you
+Since the only data I want to store is the type of object it really is I think I will hybridize the type enum and the atom struct.
 
-it is 2008-04-16
+typedef enum
+{
+	tcons, tint, tchar, tfun, tnull;
+} atom;
 
-to do this, I will simply use the C stack and recursive calls to the parse
-function. it will take in a string and return the equivalent atom.
+typedef struct acons
+{
+	atom t, *car, *cdr;
+}
 
-the trick is allowing a recursive parse to destructively modify the string
-pointer in order to parse the string left to right
-
-the way I solved this before was a pointer to a string (which was a pointer to
-a char). This is probably the best way to do this
-
-ls
-
-OK, new parse problem
-
-this one is about the parsing of a list. any other atom can be parsed with one
-"pass", but it's the list that must be done recursively.
-
-- read '(', know we're dealing with a list or a pair
-- consume whitespace 
-- check for ')' - if it is, it's empty list/null
-- parse car
-- consume whitespace
-- check for ')' - if it is, it's a list of 1 element
-- check for '.' - if it is, it's a dotted pair
-- insert fake '(' right before pointer
-- parse as a new list
+typedef struct aint
+{
+	atom t;
+	int i;
+}
 
 
 **********************************************************
 */
 
-//typedef enum { cons, integer, function } type;
 
+//typedef enum { cons, integer, function } type;
 typedef enum
 {
 	tcons, tint, tchar, tfun, tnull
@@ -95,33 +82,7 @@ atom *null ()
 	return newatom(tnull);
 }
 
-/*
-- read '(', know we're dealing with a list or a pair
-- consume whitespace 
-- check for ')' - if it is, it's empty list/null
-- parse car
-- consume whitespace
-- check for ')' - if it is, it's a list of 1 element
-- check for '.' - if it is, it's a dotted pair
-- insert fake '(' right before pointer
-- parse as a new list
 
-seeing the relative simplicity in an iterative solution to the print
-I've decided to attempt to both fix and refactor this function with
-that same iterative process of reading a list:
-
-- read '(', know we're dealing with a list or a pair
-- consume whitespace
-- check for ')', if it is return null
-- have two pointers, head and temp, head pointing to the head
-- begin read loop
-	- 
-	- is next ')'?
-		- yes: end loop
-		
-
-
-*/
 
 char **cw (char **p)
 {
