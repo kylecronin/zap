@@ -9,7 +9,6 @@ now we're in michelle branch
 I forgot - I hate michelle branch
 
 
-what is this?
 right back at you
 
 it is 2008-04-16
