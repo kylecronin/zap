@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>scheme.c</string>
+	<string>types.c</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -16,7 +16,13 @@
 			<key>filename</key>
 			<string>scheme.c</string>
 			<key>lastUsed</key>
-			<date>2008-04-19T06:17:15Z</date>
+			<date>2008-04-23T15:38:30Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>types.c</string>
+			<key>lastUsed</key>
+			<date>2008-04-26T03:26:40Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -30,23 +36,38 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>130</integer>
 				<key>line</key>
-				<integer>129</integer>
+				<integer>10</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>105</integer>
+			<integer>117</integer>
+		</dict>
+		<key>types.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>30</integer>
+				<key>line</key>
+				<integer>19</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>scheme.c</string>
+		<string>types.c</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{285, 86}, {797, 692}}</string>
+	<string>{{221, 79}, {757, 699}}</string>
 </dict>
 </plist>
