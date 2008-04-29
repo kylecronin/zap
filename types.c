@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// hello from Linux
+
 /**
  * atom
  *
