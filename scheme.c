@@ -10,21 +10,6 @@ each type will have its own typedef. the atom typedef will be the supertype that
 
 Since the only data I want to store is the type of object it really is I think I will hybridize the type enum and the atom struct.
 
-typedef enum {
-	tcons, tint, tchar, tfun, tnull;
-} atom;
-
-typedef struct acons {
-	atom t, *car, *cdr;
-}
-
-typedef struct aint
-{
-	atom t;
-	int i;
-}
-
-
 **********************************************************
 */
 
