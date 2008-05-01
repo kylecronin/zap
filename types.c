@@ -3,7 +3,6 @@
 #include <string.h>
 
 
-
 typedef enum {
 	tcons, tint, tchar, tfun, tstring, tsym
 } atom;
