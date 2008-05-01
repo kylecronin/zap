@@ -35,7 +35,7 @@ atom *readlist (char **input) {
 
 atom *read (char **input) {	
 	atom *ret;
-	char *end;
+	char *end, oldend;
 	
 	switch(**cw(input)) {
 		case '(':
@@ -56,10 +56,25 @@ atom *read (char **input) {
 			ip(input);
 			break;
 		default:
-			ret = (atom *) newint(atoi(*input));
-			while (**input >= 48 && **input <= 57)
-				ip(input);
+			if (**input >= 48 && **input <=57)
+			{
+				ret = (atom *) newint(atoi(*input));
+				while (**input >= 48 && **input <= 57)
+					ip(input);
+			}
+			else
+			{
+				end = *input + 1;
+				while (*end && *end != ' ' && *end != '(' && *end !=')')
+					end++;
+				oldend = *end;
+				*end = '\0';
+				ret = (atom *) newsym(*input);
+				*end = oldend;
+				*input = end;
+			}
 			break;
+			
 	}
 	
 	return ret;
@@ -89,6 +104,7 @@ void print (atom *x) {
 			case tint: printf("%i", ((aint *) x)->i); break;
 			case tchar: printf("#\\%c", ((achar *) x)->c); break;
 			case tstring: printf("\"%s\"", ((astring *) x)->s); break;
+			case tsym: printf("%s", ((asym *) x)->s); break;
 		}
 	}
 }
