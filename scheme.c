@@ -16,58 +16,6 @@ Since the only data I want to store is the type of object it really is I think I
 #include "types.c"
 
 
-//typedef enum { cons, integer, function } type;
-typedef enum
-{
-	tcons, tint, tchar, tfun, tnull
-} type;
-
-// atom struct with t being the type (as an enum) and
-// a union that contains either a cons (named cons - confusing)
-// just made a change that the enums begin with t, so a cons is a tcons
-typedef struct atom
-{
-	//enum { tcons, tint, tchar, tfun, tnull } t;
-	type t;
-	union {
-		struct { struct atom *car, *cdr; } cons;
-		int i;
-		char c;
-	};
-} atom;
-
-atom *newatom(type x)
-{
-	atom *ret = (atom*) malloc(sizeof(atom));
-	ret->t = x;
-	return ret;
-}
-
-
-// the cons operation, allocates mem and applies the cons
-atom *cons (atom *car, atom *cdr)
-{
-	atom *ret = newatom(tcons);
-	ret->cons.car = car;
-	ret->cons.cdr = cdr;
-	return ret;
-}
-
-// converts the int to an atom
-atom *conv (int val)
-{
-	atom *ret = newatom(tint);
-	ret->i = val;
-	return ret;
-}
-
-// returns the null 
-atom *null ()
-{
-	return newatom(tnull);
-}
-
-
 
 char **cw (char **p)
 {
@@ -92,18 +40,16 @@ atom *parse (char **input)
 		if (**cw(input) == ')')
 		{
 			ip(input);
-			return newatom(tnull);
+			return NULL;
 		}
 		
-		// we now know we're returning a cons object	
-		atom *ret = newatom(tcons);
+		atom *car, *cdr;
 		
-		// read in the car via parse
-		ret->cons.car = parse(input);
+		car = parse(input);
 		
 		// if we encounter ')', we've read a list with 1 element
 		if (**cw(input) == ')')
-			ret->cons.cdr = null();
+			cdr = NULL;
 			
 		// otherwise we'ver read in a pair or a list
 		else
@@ -111,7 +57,7 @@ atom *parse (char **input)
 			if (**input == '.')
 			{
 				ip(input);
-				ret->cons.cdr = parse(input);
+				cdr = parse(input);
 				if (**cw(input) == ')')
 					ip(input);
 				else
@@ -121,20 +67,19 @@ atom *parse (char **input)
 			{
 				dp(input);
 				**input = '(';
-				ret->cons.cdr = parse(input);
+				cdr = parse(input);
 				if (**cw(input) == ')')
 					ip(input);
 				else
 					printf("parse error: invalid list [ read '%s' ]\n", *input);
 			}	
 		}	
-		return ret;
+		return newcons(car, cdr);
 	}
 	else
 	{
 		//ret->t = integer;
-		atom *ret = newatom(tint);
-		ret->i = atoi(*input);
+		atom *ret = newint(atoi(*input));
 		while (**input >= 48 && **input <= 57)
 			ip(input);
 		return ret;
@@ -162,29 +107,34 @@ would be to create a loop instead
 
 void print (atom *x)
 {
-	if (x->t == tcons)
+	if (!x)
 	{
+		printf("()");
+	}
+	else if (*x == tcons)
+	{
+		acons *c = (acons *) x;
 		printf("(");
-		print(x->cons.car);
-		while (x->cons.cdr->t == tcons)
+		print(c->car);
+		while (c->cdr && *(c->cdr) == tcons)
 		{
-			x = x->cons.cdr;
+			c = (acons *) c->cdr;
 			printf(" ");
-			print(x->cons.car);
+			print(c->car);
 		}
-		if (x->cons.cdr->t != tnull)
+		if (c->cdr)
 		{
 			printf(" . ");
-			print(x->cons.cdr);
+			print(c->cdr);
 		}
 		printf(")");
 	}
 	else
 	{
-		switch (x->t)
+		//printf("o");
+		switch (*x)
 		{
-			case tnull: printf("()"); break;
-			case tint: printf("%i", x->i); break;
+			case tint: printf("%i", ((aint *) x)->i); break;
 		}
 	}
 }
@@ -197,12 +147,16 @@ int main (int argc, const char * argv[])
 	char buff[256];
 	char *p;
 	
+	print(newint(4));
+	
 	for (;;)
 	{
 		printf("> ");
 		gets(buff);
 		p = buff;
-		print(parse(&p));
+		atom *x = parse(&p);
+		printf("parsed\n");
+		print(x);
 		printf("\n");
 	}
 	
