@@ -11,9 +11,8 @@ char **ip (char **p) { (*p)++; return p; }
 
 atom *readlist (char **input) {
 	atom *ret, *car, *cdr;
-	cw(input);
 	
-	switch (**input) {
+	switch (**cw(input)) {
 		case ')':
 			ret = NULL;
 			ip(input);
@@ -37,9 +36,8 @@ atom *readlist (char **input) {
 atom *read (char **input) {	
 	atom *ret;
 	char *end;
-	cw(input);
 	
-	switch(**input) {
+	switch(**cw(input)) {
 		case '(':
 			return readlist(ip(input));
 		case '"':
@@ -49,6 +47,13 @@ atom *read (char **input) {
 			*end = '\0';
 			ret = (atom *) newstring(*input + 1);
 			*input = end + 1;
+			break;
+		case '#':
+			if (**ip(input) == '\\')
+				ret = (atom *) newchar(**ip(input));
+			else
+				printf("invalid # syntax\n");
+			ip(input);
 			break;
 		default:
 			ret = (atom *) newint(atoi(*input));
@@ -82,6 +87,7 @@ void print (atom *x) {
 		//printf("o");
 		switch (*x) {
 			case tint: printf("%i", ((aint *) x)->i); break;
+			case tchar: printf("#\\%c", ((achar *) x)->c); break;
 			case tstring: printf("\"%s\"", ((astring *) x)->s); break;
 		}
 	}
