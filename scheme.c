@@ -3,76 +3,65 @@
 
 #include "types.c"
 
+atom* readlist (char**);
+atom* read (char**);
 
-char **cw (char **p)
+char **cw (char **p) { while (**p == ' ') (*p)++; return p; }
+char **ip (char **p) { (*p)++; return p; }
+
+atom *readlist (char **input)
 {
-	while (**p == ' ') (*p)++;
-	return p;
+	atom *ret, *car, *cdr;
+	cw(input);
+	
+	switch (**input)
+	{
+		case ')':
+			ret = NULL;
+			ip(input);
+			break;
+		case '.':
+			ret = read(ip(input));
+			if (**cw(input) == ')')
+				ip(input);
+			else
+				printf("invalid dotted list\n");
+			break;
+		default:
+			car = read(input);
+			cdr = readlist(input);
+			return newcons(car, cdr);
+	}
+	
+	return ret;
 }
-
-void ip (char **p) { (*p)++; }
-void dp (char **p) { (*p)--; }
 
 atom *read (char **input)
 {	
-	if (**cw(input) == '(')
+	atom *ret;
+	char *end;
+	cw(input);
+	
+	switch(**input)
 	{
-		ip(input);
-		
-		if (**cw(input) == ')')
-		{
-			ip(input);
-			return NULL;
-		}
-		
-		atom *car = read(input), *cdr;
-		
-		if (**cw(input) == ')')
-		{
-			ip(input);
-			return newcons(car, NULL);
-		}
-			
-		else
-		{
-			if (**input == '.')
-			{
-				ip(input);
-				cdr = read(input);
-				if (**cw(input) == ')')
-					ip(input);
-				else
-					printf("read error: invalid dotted pair\n");
-			}
-			else
-			{
-				dp(input);
-				**input = '(';
-				cdr = read(input);
-			}	
-		}	
-		return newcons(car, cdr);
-	}
-	else
-	{
-		if (**input == '"')
-		{
-			char *end = *input + 1;
+		case '(':
+			return readlist(ip(input));
+		case '"':
+			end = *input + 1;
 			while (*end != '"')
 				end++;
 			*end = '\0';
-			atom *ret = newstring(*input + 1);
+			ret = (atom *) newstring(*input + 1);
 			*input = end + 1;
-			return ret;
-		}
-		else
-		{
-			atom *ret = newint(atoi(*input));
+			break;
+		default:
+			ret = (atom *) newint(atoi(*input));
 			while (**input >= 48 && **input <= 57)
 				ip(input);
-			return ret;
-		}
+			break;
 	}
+	
+	return ret;
 }
 
 void print (atom *x)
@@ -113,6 +102,7 @@ void print (atom *x)
 
 atom *eval (atom *expr)
 {
+	if (!expr) return expr;
 	if (*expr == tcons)
 	{
 		
