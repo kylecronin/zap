@@ -3,116 +3,52 @@
 
 #include "types.c"
 
-atom* readlist (char**);
-atom* read (char**);
+/**
 
-char **cw (char **p) { while (**p == ' ') (*p)++; return p; }
-char **ip (char **p) { (*p)++; return p; }
+	Now that I have reading/printing down, I need to really figure out what
+	I want to do with regard to functions. First I'll need a namespace, which
+	abstractly is simply a lookup table that associates a name with a
+	corresponding atom. However, lexical scoping can mess this up. The simple
+	solution is to do the namespace lookup immediately when the function
+	is defined. This has problems when using set! because that updates the
+	lexical namespace.
+	
+	What if we were to have a tree-like namespace structure? This would allow
+	us to keep the functions intact as they are defined. This would even allow
+	us to create a new namespace for each time the function is called, and
+	allow the expression to simply evaluate itself.
+	
+	
+	Of course, there is the bear of implementation difficulty hiding up ahead,
+	and the bear of course is the continuation. How in the world do we
+	implement a continuation? This is further compounded by my weak
+	understanding about what a continuation is.
+	
+	The general rule of thumb is that the continuation is everpresent, but
+	only appears when you call-with-current-continuation.
 
-atom *readlist (char **input) {
-	atom *ret, *car, *cdr;
+
+**/
+
+
+atom *apply (afun *fn, atom *args) {
 	
-	switch (**cw(input)) {
-		case ')':
-			ret = NULL;
-			ip(input);
-			break;
-		case '.':
-			ret = read(ip(input));
-			if (**cw(input) == ')')
-				ip(input);
-			else
-				printf("invalid dotted list\n");
-			break;
-		default:
-			car = read(input);
-			cdr = readlist(input);
-			return newcons(car, cdr);
-	}
 	
-	return ret;
+	
+	
+	return (atom *) args;
 }
-
-atom *read (char **input) {	
-	atom *ret;
-	char *end, oldend;
-	
-	switch(**cw(input)) {
-		case '(':
-			return readlist(ip(input));
-		case '"':
-			end = *input + 1;
-			while (*end != '"')
-				end++;
-			*end = '\0';
-			ret = (atom *) newstring(*input + 1);
-			*input = end + 1;
-			break;
-		case '#':
-			if (**ip(input) == '\\')
-				ret = (atom *) newchar(**ip(input));
-			else
-				printf("invalid # syntax\n");
-			ip(input);
-			break;
-		default:
-			if (**input >= 48 && **input <=57)
-			{
-				ret = (atom *) newint(atoi(*input));
-				while (**input >= 48 && **input <= 57)
-					ip(input);
-			}
-			else
-			{
-				end = *input + 1;
-				while (*end && *end != ' ' && *end != '(' && *end !=')')
-					end++;
-				oldend = *end;
-				*end = '\0';
-				ret = (atom *) newsym(*input);
-				*end = oldend;
-				*input = end;
-			}
-			break;
-			
-	}
-	
-	return ret;
-}
-
-void print (atom *x) {
-	if (!x)
-		printf("()");
-	else if (*x == tcons) {
-		acons *c = (acons *) x;
-		printf("(");
-		print(c->car);
-		while (c->cdr && *(c->cdr) == tcons) {
-			c = (acons *) c->cdr;
-			printf(" ");
-			print(c->car);
-		}
-		if (c->cdr) {
-			printf(" . ");
-			print(c->cdr);
-		}
-		printf(")");
-	}
-	else {
-		//printf("o");
-		switch (*x) {
-			case tint: printf("%i", ((aint *) x)->i); break;
-			case tchar: printf("#\\%c", ((achar *) x)->c); break;
-			case tstring: printf("\"%s\"", ((astring *) x)->s); break;
-			case tsym: printf("%s", ((asym *) x)->s); break;
-		}
-	}
-}
-
 
 atom *eval (atom *expr) {
+	return expr;
+	
 	if (!expr) return expr;
 	if (*expr == tcons) {
+		acons *c = (acons *) expr;
+		if (c->car && *(c->car) == tfun)
+			apply((afun *) c->car, c->cdr);
+		
+		
 		
 		return expr;
 	}
