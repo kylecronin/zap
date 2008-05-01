@@ -26,32 +26,55 @@ char **cw (char **p)
 void ip (char **p) { (*p)++; }
 void dp (char **p) { (*p)--; }
 
-
+/**
+	I finally know what my problem is - I'm trying to read the close
+	paren off a list that I've created out of thin air.
+	
+	This practice of modifying the list is dangerous, but there might be a
+	way to salvage this
+	
+	If I insert a paren, I don't expect one at the end.
+	
+	
+	
+	new problem: either the read or the print of (1 (2) 3) is (1 (2))
+	
+	
+	just tested the print, it works fine. so it is, as I suspected, the read
+	operation.
+	
+	we need to step through this:
+	parse (1 (2) 3)
+		read (
+		parse 1
+		parse ((2) 3)
+			read (
+			parse (2)
+			
+			
+	I, uh, fixed it. just needed an ip(input);
+**/
 
 atom *parse (char **input)
 {	
-	// if the first character is '(', we're reading a list
 	if (**cw(input) == '(')
 	{
-		// increment pointer, consume whitespace
 		ip(input);
 		
-		// if we encounter ')', we've read a null
 		if (**cw(input) == ')')
 		{
 			ip(input);
 			return NULL;
 		}
 		
-		atom *car, *cdr;
+		atom *car = parse(input), *cdr;
 		
-		car = parse(input);
-		
-		// if we encounter ')', we've read a list with 1 element
 		if (**cw(input) == ')')
-			cdr = NULL;
+		{
+			ip(input);
+			return newcons(car, NULL);
+		}
 			
-		// otherwise we'ver read in a pair or a list
 		else
 		{
 			if (**input == '.')
@@ -68,10 +91,11 @@ atom *parse (char **input)
 				dp(input);
 				**input = '(';
 				cdr = parse(input);
+				/*printf("checking for ) at %i\n", *input - start);
 				if (**cw(input) == ')')
 					ip(input);
 				else
-					printf("parse error: invalid list [ read '%s' ]\n", *input);
+					printf("parse error: invalid list [ read '%i' ]\n", *input - start);*/
 			}	
 		}	
 		return newcons(car, cdr);
@@ -147,16 +171,12 @@ int main (int argc, const char * argv[])
 	char buff[256];
 	char *p;
 	
-	print(newint(4));
-	
 	for (;;)
 	{
 		printf("> ");
 		gets(buff);
 		p = buff;
-		atom *x = parse(&p);
-		printf("parsed\n");
-		print(x);
+		print(parse(&p));
 		printf("\n");
 	}
 	
