@@ -55,10 +55,23 @@ atom *read (char **input)
 	}
 	else
 	{
-		atom *ret = newint(atoi(*input));
-		while (**input >= 48 && **input <= 57)
-			ip(input);
-		return ret;
+		if (**input == '"')
+		{
+			char *end = *input + 1;
+			while (*end != '"')
+				end++;
+			*end = '\0';
+			atom *ret = newstring(*input + 1);
+			*input = end + 1;
+			return ret;
+		}
+		else
+		{
+			atom *ret = newint(atoi(*input));
+			while (**input >= 48 && **input <= 57)
+				ip(input);
+			return ret;
+		}
 	}
 }
 
@@ -92,9 +105,24 @@ void print (atom *x)
 		switch (*x)
 		{
 			case tint: printf("%i", ((aint *) x)->i); break;
+			case tstring: printf("\"%s\"", ((astring *) x)->s); break;
 		}
 	}
 }
+
+
+atom *eval (atom *expr)
+{
+	if (*expr == tcons)
+	{
+		
+		return expr;
+	}
+	else
+		return expr;
+}
+
+
 
 int main (int argc, const char * argv[])
 {
@@ -106,7 +134,7 @@ int main (int argc, const char * argv[])
 		printf("> ");
 		gets(buff);
 		p = buff;
-		print(read(&p));
+		print(eval(read(&p)));
 		printf("\n");
 	}
 	
