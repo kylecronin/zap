@@ -9,13 +9,11 @@ atom* read (char**);
 char **cw (char **p) { while (**p == ' ') (*p)++; return p; }
 char **ip (char **p) { (*p)++; return p; }
 
-atom *readlist (char **input)
-{
+atom *readlist (char **input) {
 	atom *ret, *car, *cdr;
 	cw(input);
 	
-	switch (**input)
-	{
+	switch (**input) {
 		case ')':
 			ret = NULL;
 			ip(input);
@@ -36,14 +34,12 @@ atom *readlist (char **input)
 	return ret;
 }
 
-atom *read (char **input)
-{	
+atom *read (char **input) {	
 	atom *ret;
 	char *end;
 	cw(input);
 	
-	switch(**input)
-	{
+	switch(**input) {
 		case '(':
 			return readlist(ip(input));
 		case '"':
@@ -64,35 +60,27 @@ atom *read (char **input)
 	return ret;
 }
 
-void print (atom *x)
-{
+void print (atom *x) {
 	if (!x)
-	{
 		printf("()");
-	}
-	else if (*x == tcons)
-	{
+	else if (*x == tcons) {
 		acons *c = (acons *) x;
 		printf("(");
 		print(c->car);
-		while (c->cdr && *(c->cdr) == tcons)
-		{
+		while (c->cdr && *(c->cdr) == tcons) {
 			c = (acons *) c->cdr;
 			printf(" ");
 			print(c->car);
 		}
-		if (c->cdr)
-		{
+		if (c->cdr) {
 			printf(" . ");
 			print(c->cdr);
 		}
 		printf(")");
 	}
-	else
-	{
+	else {
 		//printf("o");
-		switch (*x)
-		{
+		switch (*x) {
 			case tint: printf("%i", ((aint *) x)->i); break;
 			case tstring: printf("\"%s\"", ((astring *) x)->s); break;
 		}
@@ -100,11 +88,9 @@ void print (atom *x)
 }
 
 
-atom *eval (atom *expr)
-{
+atom *eval (atom *expr) {
 	if (!expr) return expr;
-	if (*expr == tcons)
-	{
+	if (*expr == tcons) {
 		
 		return expr;
 	}
@@ -114,13 +100,11 @@ atom *eval (atom *expr)
 
 
 
-int main (int argc, const char * argv[])
-{
+int main (int argc, const char * argv[]) {
 	char buff[256];
 	char *p;
 	
-	for (;;)
-	{
+	for (;;) {
 		printf("> ");
 		gets(buff);
 		p = buff;
