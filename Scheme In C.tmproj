@@ -16,13 +16,13 @@
 			<key>filename</key>
 			<string>scheme.c</string>
 			<key>lastUsed</key>
-			<date>2008-04-23T15:38:30Z</date>
+			<date>2008-04-30T04:45:00Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>types.c</string>
 			<key>lastUsed</key>
-			<date>2008-04-26T03:26:40Z</date>
+			<date>2008-04-30T04:45:00Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -50,9 +50,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>30</integer>
+				<integer>22</integer>
 				<key>line</key>
-				<integer>19</integer>
+				<integer>29</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -68,6 +68,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{221, 79}, {757, 699}}</string>
+	<string>{{338, 231}, {757, 699}}</string>
 </dict>
 </plist>

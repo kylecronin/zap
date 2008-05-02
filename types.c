@@ -74,10 +74,29 @@ atom *newsym(char *s) {
 	return (atom *) ret;
 }
 
+
+typedef struct nspace {
+	nspace *head;
+	asym name;
+	atom *link;
+}
+
+nspace *define(nspace *head, asym name, atom *link) {
+	nspace *ret = malloc(sizeof(nspace));
+	ret->head = head;
+	ret->name = name;
+	ret->link = link;	
+}
+
+
 typedef struct afun {
 	atom t;
+	nspace *n;
 	
 } afun;
+
+atom *newfun()
+
 
 atom* readlist (char**);
 atom* read (char**);
@@ -183,3 +202,4 @@ void print (atom *x) {
 		}
 	}
 }
+
