@@ -4,8 +4,16 @@
 
 
 typedef enum {
-	tcons, tint, tchar, tfun, tstring, tsym
+	tcons, tint, tchar, tfun, tstring, tsym, tbool
 } atom;
+
+
+atom sect = tbool, secf = tbool;
+atom *t = &sect, *f = &secf;
+
+atom *newbool(int val) {
+	return val ? t : f;
+}
 
 
 typedef struct acons {
@@ -76,26 +84,33 @@ atom *newsym(char *s) {
 
 
 typedef struct nspace {
-	nspace *head;
-	asym name;
+	struct nspace *head;
+	asym *name;
 	atom *link;
-}
-
-nspace *define(nspace *head, asym name, atom *link) {
+} nspace;
+ 
+nspace *define(nspace *head, asym *name, atom *link) {
 	nspace *ret = malloc(sizeof(nspace));
 	ret->head = head;
 	ret->name = name;
-	ret->link = link;	
+	ret->link = link;
+	return ret;	
 }
 
 
 typedef struct afun {
-	atom t;
+	atom t;// = tfun;
 	nspace *n;
-	
+	acons *args, *body;
 } afun;
 
-atom *newfun()
+atom *newfun(acons *args, acons *body, nspace *n) {
+	afun *ret = malloc(sizeof(afun));
+	ret->args = args;
+	ret->body = body;
+	ret->n = n;
+	return (atom *) ret;
+}
 
 
 atom* readlist (char**);
