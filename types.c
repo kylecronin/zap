@@ -101,11 +101,12 @@ nspace *define(nspace *head, asym *name, atom *link) {
 typedef struct afun {
 	atom t;// = tfun;
 	nspace *n;
-	acons *args, *body;
+	atom *args, *body;
 } afun;
 
-atom *newfun(acons *args, acons *body, nspace *n) {
+atom *newfun(atom *args, atom *body, nspace *n) {
 	afun *ret = malloc(sizeof(afun));
+	ret->t = tfun;
 	ret->args = args;
 	ret->body = body;
 	ret->n = n;
@@ -214,6 +215,7 @@ void print (atom *x) {
 			case tchar: printf("#\\%c", ((achar *) x)->c); break;
 			case tstring: printf("\"%s\"", ((astring *) x)->s); break;
 			case tsym: printf("%s", ((asym *) x)->s); break;
+			case tfun: printf("#fun#"); break;
 		}
 	}
 }

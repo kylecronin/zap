@@ -22,23 +22,31 @@
 **/
 
 
-
-
-
-
 int main (int argc, const char * argv[]) {
 	char buff[256];
 	char *p;
 	nspace *n = NULL;
 	n = define(n, (asym *) newsym("x"), newint(3));
+	printf("x is now 3\n");
 	
-	for (;;) {
+	atom *fn = newfun(newcons(newsym("x"), NULL), newsym("x"), n);
+	printf("created fn x->x\n");
+	n = define(n, (asym *) newsym("identity"), fn);
+	printf("added fn to namespace as identity\n");
+	print(lookup(n, (asym *) newsym("identity")));
+	printf("that was identity\n");
+	
+	atom *ans = eval(newcons(newsym("identity"), newcons(newint(5), NULL)), n);
+	printf("we have an answer!\n");
+	print(ans);
+	
+	/*for (;;) {
 		printf("> ");
 		gets(buff);
 		p = buff;
 		print(eval(read(&p), n));
 		printf("\n");
-	}
+	}*/
 	
     return 0;
 }
