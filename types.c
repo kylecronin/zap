@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define catom(x) ((atom *) x)
+
 
 typedef enum {
 	tcons, tint, tchar, tfun, tstring, tsym, tbool
@@ -158,6 +160,7 @@ afun *cfun(atom *x) {
 
 atom* readlist (char**);
 atom* read (char**);
+void print (atom*);
 
 char **cw (char **p) { while (**p == ' ') (*p)++; return p; }
 char **ip (char **p) { (*p)++; return p; }
@@ -236,6 +239,22 @@ atom *read (char **input) {
 	return ret;
 }
 
+void printns (nspace *n) {
+	if (n)
+	{
+		print(catom(n->name));
+		printf(" -> ");
+		print(n->link);
+		printf(", ");
+		printns(n->head);
+	}
+	else
+	{
+		printf("end ns");
+	}
+}
+
+
 void print (atom *x) {
 	if (!x)
 		printf("()");
@@ -260,8 +279,17 @@ void print (atom *x) {
 			case tchar: printf("#\\%c", cchar(x)->c); break;
 			case tstring: printf("\"%s\"", cstring(x)->s); break;
 			case tsym: printf("%s", csym(x)->s); break;
-			case tfun: printf("#fun#"); break;
+			case tfun:
+				printf("#fun#");
+				break;
+				printf("args: [");
+				print(cfun(x)->args);
+				printf("] body: [");
+				print(cfun(x)->body);
+				printf("] ns: [");
+				printns(cfun(x)->n);
+				printf("]");
+				break;
 		}
 	}
 }
-

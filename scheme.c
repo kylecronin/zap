@@ -27,25 +27,16 @@ int main (int argc, const char * argv[]) {
 	char *p;
 	nspace *n = NULL;
 	n = define(n, (asym *) newsym("x"), newint(3));
-	/*printf("x is now 3\n");
 	
 	atom *fn = newfun(newcons(newsym("x"), NULL), newsym("x"), n);
-	printf("created fn x->x\n");
 	n = define(n, (asym *) newsym("identity"), fn);
-	printf("added fn to namespace as identity\n");
-	print(lookup(n, (asym *) newsym("identity")));
-	printf("that was identity\n");
-	
-	atom *ans = eval(newcons(newsym("identity"), newcons(newsym("hello"), NULL)), n);
-	printf("we have an answer!\n");
-	print(ans);*/
 	
 	for (;;) {
 		printf("> ");
 		gets(buff);
 		p = buff;
-		//print(eval(read(&p), n));
-		print(read(&p));
+		print(eval(read(&p), n));
+		//print(read(&p));
 		printf("\n");
 	}
 	

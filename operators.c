@@ -43,7 +43,7 @@
 
 **/
 
-#define catom(x) ((atom *) x)
+
 
 int eq(atom *a, atom *b) {
 	if (*a != *b) return 0;
@@ -62,7 +62,6 @@ int eq(atom *a, atom *b) {
 }
 
 atom *lookup(nspace *search, asym *name) {
-	
 	if (!search) return NULL;
 	if (eq(catom(name), catom(search->name)))
 		return search->link;
@@ -97,10 +96,9 @@ atom *apply (afun *fn, atom *args) {
 					printf("too many arguments\n");
 	}
 	
+	return eval(fn->body, x);
 	
-	eval(fn->body, x);
-	
-	return (atom *) args;
+	//return (atom *) args;
 }
 
 /**
