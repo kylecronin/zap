@@ -8,66 +8,87 @@
 	<array>
 		<dict>
 			<key>filename</key>
-			<string>otest.c</string>
-			<key>lastUsed</key>
-			<date>2008-04-17T06:05:46Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
 			<string>scheme.c</string>
 			<key>lastUsed</key>
-			<date>2008-04-30T04:45:00Z</date>
+			<date>2008-05-02T18:45:05Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>types.c</string>
 			<key>lastUsed</key>
-			<date>2008-04-30T04:45:00Z</date>
+			<date>2008-05-02T18:45:05Z</date>
 			<key>selected</key>
 			<true/>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>test.c</string>
+			<key>lastUsed</key>
+			<date>2008-05-02T03:59:32Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>operators.c</string>
+			<key>lastUsed</key>
+			<date>2008-05-02T18:21:20Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
+		<key>operators.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>23</integer>
+				<key>line</key>
+				<integer>87</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>45</integer>
+		</dict>
 		<key>scheme.c</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>130</integer>
+				<integer>16</integer>
 				<key>line</key>
-				<integer>10</integer>
+				<integer>47</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>117</integer>
+			<integer>7</integer>
 		</dict>
 		<key>types.c</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>22</integer>
+				<integer>10</integer>
 				<key>line</key>
-				<integer>29</integer>
+				<integer>213</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>160</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>scheme.c</string>
 		<string>types.c</string>
+		<string>operators.c</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
-	<true/>
+	<false/>
 	<key>windowFrame</key>
-	<string>{{338, 231}, {757, 699}}</string>
+	<string>{{602, 77}, {671, 701}}</string>
 </dict>
 </plist>

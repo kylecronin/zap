@@ -28,6 +28,13 @@ atom *newcons(atom *car, atom *cdr) {
 	return (atom *) ret;
 }
 
+acons *ccons(atom *x) {
+	if (x && *x == tcons)
+		return (acons *) x;
+	printf("bad cons cast\n");
+	return NULL;
+}
+
 
 typedef struct aint {
 	atom t;
@@ -41,6 +48,13 @@ atom *newint(int i) {
 	return (atom *) ret;
 }
 
+aint *cint(atom *x) {
+	if (x && *x == tint)
+		return (aint *) x;
+	printf("bad int cast\n");
+	return NULL;
+}
+
 
 typedef struct achar {
 	atom t;
@@ -52,6 +66,13 @@ atom *newchar(char c) {
 	ret->t = tchar;
 	ret->c = c;
 	return (atom *) ret;
+}
+
+achar *cchar(atom *x) {
+	if (x && *x == tchar)
+		return (achar *) x;
+	printf("bad char cast\n");
+	return NULL;
 }
 
 
@@ -68,6 +89,13 @@ atom *newstring(char *s) {
 	return (atom *) ret;
 }
 
+astring *cstring(atom *x) {
+	if (x && *x == tstring)
+		return (astring *) x;
+	printf("bad string cast\n");
+	return NULL;
+}
+
 
 typedef struct asym {
 	atom t;
@@ -80,6 +108,13 @@ atom *newsym(char *s) {
 	ret->t = tsym;
 	ret->s = strcpy(str, s);
 	return (atom *) ret;
+}
+
+asym *csym(atom *x) {
+	if (x && *x == tsym)
+		return (asym *) x;
+	printf("bad sym cast\n");
+	return NULL;
 }
 
 
@@ -111,6 +146,13 @@ atom *newfun(atom *args, atom *body, nspace *n) {
 	ret->body = body;
 	ret->n = n;
 	return (atom *) ret;
+}
+
+afun *cfun(atom *x) {
+	if (x && *x == tfun)
+		return (afun *) x;
+	printf("bad fun cast\n");
+	return NULL;
 }
 
 
@@ -156,20 +198,23 @@ atom *read (char **input) {
 			while (*end != '"')
 				end++;
 			*end = '\0';
-			ret = (atom *) newstring(*input + 1);
+			ret = newstring(*input + 1);
 			*input = end + 1;
 			break;
 		case '#':
 			if (**ip(input) == '\\')
-				ret = (atom *) newchar(**ip(input));
+				ret = newchar(**ip(input));
 			else
 				printf("invalid # syntax\n");
 			ip(input);
 			break;
+		case '\'':
+			ret = newcons(newsym("quote"), newcons(read(ip(input)), NULL));
+			break;
 		default:
 			if (**input >= 48 && **input <=57)
 			{
-				ret = (atom *) newint(atoi(*input));
+				ret = newint(atoi(*input));
 				while (**input >= 48 && **input <= 57)
 					ip(input);
 			}
@@ -180,7 +225,7 @@ atom *read (char **input) {
 					end++;
 				oldend = *end;
 				*end = '\0';
-				ret = (atom *) newsym(*input);
+				ret = newsym(*input);
 				*end = oldend;
 				*input = end;
 			}
@@ -211,10 +256,10 @@ void print (atom *x) {
 	}
 	else {
 		switch (*x) {
-			case tint: printf("%i", ((aint *) x)->i); break;
-			case tchar: printf("#\\%c", ((achar *) x)->c); break;
-			case tstring: printf("\"%s\"", ((astring *) x)->s); break;
-			case tsym: printf("%s", ((asym *) x)->s); break;
+			case tint: printf("%i", cint(x)->i); break;
+			case tchar: printf("#\\%c", cchar(x)->c); break;
+			case tstring: printf("\"%s\"", cstring(x)->s); break;
+			case tsym: printf("%s", csym(x)->s); break;
 			case tfun: printf("#fun#"); break;
 		}
 	}

@@ -27,7 +27,7 @@ int main (int argc, const char * argv[]) {
 	char *p;
 	nspace *n = NULL;
 	n = define(n, (asym *) newsym("x"), newint(3));
-	printf("x is now 3\n");
+	/*printf("x is now 3\n");
 	
 	atom *fn = newfun(newcons(newsym("x"), NULL), newsym("x"), n);
 	printf("created fn x->x\n");
@@ -36,17 +36,18 @@ int main (int argc, const char * argv[]) {
 	print(lookup(n, (asym *) newsym("identity")));
 	printf("that was identity\n");
 	
-	atom *ans = eval(newcons(newsym("identity"), newcons(newint(5), NULL)), n);
+	atom *ans = eval(newcons(newsym("identity"), newcons(newsym("hello"), NULL)), n);
 	printf("we have an answer!\n");
-	print(ans);
+	print(ans);*/
 	
-	/*for (;;) {
+	for (;;) {
 		printf("> ");
 		gets(buff);
 		p = buff;
-		print(eval(read(&p), n));
+		//print(eval(read(&p), n));
+		print(read(&p));
 		printf("\n");
-	}*/
+	}
 	
     return 0;
 }

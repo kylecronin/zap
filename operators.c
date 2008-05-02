@@ -1,14 +1,61 @@
+/**
+	this typing system that I'm using is getting cumbersome. I think what
+	I'm going to do is put ALL casting in overloaded helper functions.
+	
+	i.e. lookup(nspace*, asym*) will be called by lookup(nspace*, atom*)
+	and the simple translation is done automatically.
+	
+	in fact, these functions can probably be declared inline, but I'll worry
+	about those sort of distinctions later.
+	
+	
+	haha, joke's on me - overloading is C++/Java and not C. This might be
+	solveable by preprocessor macros, but for the time being, I'll just deal
+	with it.
+	
+	the idea behind the casting is to make sure everything is in proper form.
+	I might just switch it all to cast inside the operation itself. That would
+	declutter the function calls.
+	
+	Another thing that annoys me is the whole cast-and-get thing. I think
+	I'll define a new set of operations that perform the appropriate casting
+	
+	asym *csym(atom *x) {
+		if (x && *x == tsym)
+			return (asym *) x;
+		printf("bad symbol cast\n");
+		return NULL;
+	}
+	
+	these can also have another purpose - checking nullallity ;)
+	
+	atom *y = [something];
+	asym *x;
+	if (x = csym(y)) {
+		[do something with x]
+	}
+	else {
+		[y was null/not of correct type]
+	}
+	
+	my new project is rewriting all my existing code with this new
+	functionality.
+
+**/
+
+#define catom(x) ((atom *) x)
+
 int eq(atom *a, atom *b) {
 	if (*a != *b) return 0;
 	
 	switch (*a) {
 		
 		case tint:
-			return ((aint *) a)->i == ((aint *) b)->i;
+			return cint(a)->i == cint(b)->i;
 		case tchar:
-			return ((achar *) a)->c == ((achar *) b)->c;
+			return cchar(a)->c == cchar(b)->c;
 		case tsym:
-			return !strcmp(((asym *) a)->s, ((asym *) b)->s);
+			return !strcmp(csym(a)->s, csym(b)->s);
 		default:
 			return a == b;
 	}
@@ -17,10 +64,11 @@ int eq(atom *a, atom *b) {
 atom *lookup(nspace *search, asym *name) {
 	
 	if (!search) return NULL;
-	if (eq((atom *) name, (atom *) search->name))
+	if (eq(catom(name), catom(search->name)))
 		return search->link;
 	return lookup(search->head, name);
 }
+
 
 atom* apply (afun*, atom*);
 atom* eval (atom*, nspace*);
@@ -29,23 +77,23 @@ atom* eval (atom*, nspace*);
 atom *apply (afun *fn, atom *args) {
 	nspace *x = fn->n;
 	if (*(fn->args) == tsym)
-		x = define(x, (asym *) fn->args, (atom *) args);
+		x = define(x, csym(fn->args), catom(args));
 	else
 	{
-		atom *fargs = fn->args, *aargs = args;
-		while (fargs && *fargs == tcons && aargs)
+		atom *fargs = fn->args;
+		while (fargs && *fargs == tcons && args)
 		{
-			x = define(x, (asym *) ((acons *) fargs)->car, ((acons *) aargs)->car);
-			aargs = ((acons *) aargs)->cdr;
-			fargs = ((acons *) fargs)->cdr;
+			x = define(x, csym(ccons(fargs)->car), ccons(args)->car);
+			args = ccons(args)->cdr;
+			fargs = ccons(fargs)->cdr;
 		}
 		if (fargs && *fargs == tcons)
 			printf("too few arguments\n");
 		else
 			if (fargs)
-				x = define(x, (asym *) fargs, aargs);
+				x = define(x, csym(fargs), args);
 			else
-				if (aargs)
+				if (args)
 					printf("too many arguments\n");
 	}
 	
