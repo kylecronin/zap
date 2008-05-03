@@ -1,31 +1,5 @@
-atom *add(acons *args, nspace *n) {
-	if (!args)
-		return newint(0);
-
-	aint *car = cint(eval(args->car, n));
-	aint *cdr = cint(add(ccons(args->cdr), n));
-	
-	if (car && cdr)
-		return newint(car->i + cdr->i);
-	else
-		return NULL;
-}
-
 atom *quit(acons *args, nspace *n) {
 	exit(0);
-}
-
-atom *mult(acons *args, nspace *n) {
-	if (!args)
-		return newint(1);
-
-	aint *car = cint(eval(args->car, n));
-	aint *cdr = cint(mult(ccons(args->cdr), n));
-	
-	if (car && cdr)
-		return newint(car->i * cdr->i);
-	else
-		return NULL;
 }
 
 atom *lambda(acons *args, nspace *n) {
@@ -73,3 +47,93 @@ atom *def(acons *args, nspace *n) {
 	return what;
 	
 }
+
+atom *quote(acons *args, nspace *n) {
+	return args->car;
+}
+
+atom *car(acons *args, nspace *n) {
+	atom *t = eval(args->car, n);
+	if (*t == tcons)
+		return ccons(t)->car;
+	printf("car: not a pair\n");
+	return NULL;
+}
+
+atom *cdr(acons *args, nspace *n) {
+	atom *t = eval(args->car, n);
+	if (*t == tcons)
+		return ccons(t)->cdr;
+	printf("cdr: not a pair\n");
+	return NULL;
+}
+
+
+
+
+int listphelp(atom *p) {
+	if (!p)
+		return 1;
+	return (*p == tcons) && listphelp(ccons(p)->cdr);
+}
+
+atom *listp(acons *args, nspace *n) {
+	if (!args)
+	{
+		printf("list?: expects 1 argument\n");
+		return NULL;
+	}
+	return newbool(listphelp(eval(args->car, n)));
+}
+
+int lengthhelp(atom *p) {
+	if (!p)
+		return 0;
+	return 1 + lengthhelp(ccons(p)->cdr);
+}
+
+atom *length(acons *args, nspace *n) {
+	if (!listphelp(args->car))
+		printf("length: invalid list\n");
+	return newint(lengthhelp(eval(args->car, n)));
+}
+
+
+atom *numeq(acons *args, nspace *n) {
+	if (!args)
+		return t;
+	
+	
+	
+	
+	
+}
+
+atom *add(acons *args, nspace *n) {
+	if (!args)
+		return newint(0);
+
+	aint *car = cint(eval(args->car, n));
+	aint *cdr = cint(add(ccons(args->cdr), n));
+	
+	if (car && cdr)
+		return newint(car->i + cdr->i);
+	else
+		return NULL;
+}
+
+
+
+atom *mult(acons *args, nspace *n) {
+	if (!args)
+		return newint(1);
+
+	aint *car = cint(eval(args->car, n));
+	aint *cdr = cint(mult(ccons(args->cdr), n));
+	
+	if (car && cdr)
+		return newint(car->i * cdr->i);
+	else
+		return NULL;
+}
+
