@@ -198,17 +198,6 @@ atom *mult(acons *args, nspace *n) {
 		return NULL;
 }
 
-
-/*
-atom *lookup(nspace *search, asym *name) {
-	if (!search) return NULL;
-	if (eq(catom(name), catom(search->name)))
-		return search->link;
-	return lookup(search->head, name);
-}
-*/
-
-
 int sethelp(nspace *search, asym *name, atom *link) {
 	if (!search) return 0;
 	if (eq(catom(name), catom(search->name)))
@@ -242,10 +231,6 @@ atom *set(acons *args, nspace *n) {
 	return NULL;
 }
 
-
-/**
-	let needs to have a bit more care taken
-**/
 atom *let(acons *args, nspace *n) {
 	if (lengthhelp(args) != 2) {
 		printf("let: expects 2 arguments\n");
@@ -299,7 +284,6 @@ atom *lets(acons *args, nspace *n) {
 	
 	return eval(ccons(args->cdr)->car, new);
 }
-
 
 atom *letrec(acons *args, nspace *n) {
 	if (lengthhelp(args) != 2) {
