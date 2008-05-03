@@ -199,6 +199,37 @@ atom *mult(acons *args, nspace *n) {
 }
 
 
+/*
+atom *lookup(nspace *search, asym *name) {
+	if (!search) return NULL;
+	if (eq(catom(name), catom(search->name)))
+		return search->link;
+	return lookup(search->head, name);
+}
+*/
+
+
+atom *set(acons *args, nspace *n) {
+	if (!n)
+	{
+		printf("set!: unbound symbol\n");
+		return NULL;
+	}
+	if (lengthhelp(args) != 2)
+	{
+		printf("set!: expects 2 arguments\n");
+		return NULL;
+	}
+	
+	if (eq(args->car, catom(n->name)))
+	{
+		n->link = eval(ccons(args->cdr)->car, n);
+		return n->link;
+	}
+	return set(args, n->head);
+}
+
+
 /**
 	let needs to have a bit more care taken
 **/
@@ -231,12 +262,12 @@ atom *let(acons *args, nspace *n) {
 
 atom *lets(acons *args, nspace *n) {
 	if (lengthhelp(args) != 2) {
-		printf("let: expects 2 arguments\n");
+		printf("let*: expects 2 arguments\n");
 		return NULL;
 	}
 	if (!listphelp(args->car))
 	{
-		printf("let: expects list as first argument\n");
+		printf("let*: expects list as first argument\n");
 		return NULL;
 	}
 	
@@ -251,10 +282,46 @@ atom *lets(acons *args, nspace *n) {
 			bl = ccons(bl->cdr);
 		}
 		else
-			printf("let: invalid let pair\n");
+			printf("let*: invalid let pair\n");
 	
 	return eval(ccons(args->cdr)->car, new);
 }
 
+/*
+atom *letrec(acons *args, nspace *n) {
+	if (lengthhelp(args) != 2) {
+		printf("letrec: expects 2 arguments\n");
+		return NULL;
+	}
+	if (!listphelp(args->car))
+	{
+		printf("letrec: expects list as first argument\n");
+		return NULL;
+	}
+	
+	acons *bl = ccons(args->car), *c;
+	
+	while (bl)
+		if ((c = ccons(bl->car)) && *(c->car) == tsym && lengthhelp(c) == 2)
+		{
+			// legit list
+			new = define(new, csym(c->car), NULL);
+			bl = ccons(bl->cdr);
+		}
+		else
+			printf("let*: invalid let pair\n");
+	
+	bl = ccons(args->car);
+	
+	while (bl)
+		if ((c = ccons(bl->car)) && *(c->car) == tsym && lengthhelp(c) == 2)
+		{
+			// legit list
+			new = define(new, csym(c->car), NULL);
+			bl = ccons(bl->cdr);
+		}
+	
+}
+*/
 
 

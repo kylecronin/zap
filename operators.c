@@ -75,26 +75,27 @@ atom* eval (atom*, nspace*);
 
 atom *apply (afun *fn, acons *args, nspace *n) {
 	nspace *x = fn->n;
-	if (*(fn->args) == tsym)
-		x = define(x, csym(fn->args), catom(args));
-	else
-	{
-		atom *fargs = fn->args;
-		while (fargs && *fargs == tcons && args)
-		{
-			x = define(x, csym(ccons(fargs)->car), eval(args->car, n));
-			args = ccons(args->cdr);
-			fargs = ccons(fargs)->cdr;
-		}
-		if (fargs && *fargs == tcons)
-			printf("too few arguments\n");
+	if (args)
+		if (*(fn->args) == tsym)
+			x = define(x, csym(fn->args), catom(args));
 		else
-			if (fargs)
-				x = define(x, csym(fargs), catom(args));
+		{
+			atom *fargs = fn->args;
+			while (fargs && *fargs == tcons && args)
+			{
+				x = define(x, csym(ccons(fargs)->car), eval(args->car, n));
+				args = ccons(args->cdr);
+				fargs = ccons(fargs)->cdr;
+			}
+			if (fargs && *fargs == tcons)
+				printf("too few arguments\n");
 			else
-				if (args)
-					printf("too many arguments\n");
-	}
+				if (fargs)
+					x = define(x, csym(fargs), catom(args));
+				else
+					if (args)
+						printf("too many arguments\n");
+		}
 	
 	return eval(fn->body, x);
 }
