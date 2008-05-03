@@ -74,8 +74,6 @@ int listphelp(atom *p) {
 	return (*p == tcons) && listphelp(ccons(p)->cdr);
 }
 
-
-
 atom *listp(acons *args, nspace *n) {
 	if (!args)
 	{
@@ -84,8 +82,6 @@ atom *listp(acons *args, nspace *n) {
 	}
 	return newbool(listphelp(eval(args->car, n)));
 }
-
-
 
 int lengthhelp(acons *p) {
 	if (!p)
@@ -121,7 +117,6 @@ atom *aif(acons *args, nspace *n) {
 	else
 		return eval(ccons(ccons(args->cdr)->cdr)->car, n);
 }
-
 
 atom *numeq(acons *args, nspace *n) {
 	if (!args)
@@ -190,8 +185,6 @@ atom *sub(acons *args, nspace *n) {
 	return NULL;
 }
 
-
-
 atom *mult(acons *args, nspace *n) {
 	if (!args)
 		return newint(1);
@@ -204,4 +197,64 @@ atom *mult(acons *args, nspace *n) {
 	else
 		return NULL;
 }
+
+
+/**
+	let needs to have a bit more care taken
+**/
+atom *let(acons *args, nspace *n) {
+	if (lengthhelp(args) != 2) {
+		printf("let: expects 2 arguments\n");
+		return NULL;
+	}
+	if (!listphelp(args->car))
+	{
+		printf("let: expects list as first argument\n");
+		return NULL;
+	}
+	
+	nspace *new = n;
+	acons *bl = ccons(args->car), *c;
+	
+	while (bl)
+		if ((c = ccons(bl->car)) && *(c->car) == tsym && lengthhelp(c) == 2)
+		{
+			// legit list
+			new = define(new, csym(c->car), eval(ccons(c->cdr)->car, n));
+			bl = ccons(bl->cdr);
+		}
+		else
+			printf("let: invalid let pair\n");
+	
+	return eval(ccons(args->cdr)->car, new);
+}
+
+atom *lets(acons *args, nspace *n) {
+	if (lengthhelp(args) != 2) {
+		printf("let: expects 2 arguments\n");
+		return NULL;
+	}
+	if (!listphelp(args->car))
+	{
+		printf("let: expects list as first argument\n");
+		return NULL;
+	}
+	
+	nspace *new = n;
+	acons *bl = ccons(args->car), *c;
+	
+	while (bl)
+		if ((c = ccons(bl->car)) && *(c->car) == tsym && lengthhelp(c) == 2)
+		{
+			// legit list
+			new = define(new, csym(c->car), eval(ccons(c->cdr)->car, new));
+			bl = ccons(bl->cdr);
+		}
+		else
+			printf("let: invalid let pair\n");
+	
+	return eval(ccons(args->cdr)->car, new);
+}
+
+
 
