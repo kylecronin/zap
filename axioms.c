@@ -209,6 +209,16 @@ atom *lookup(nspace *search, asym *name) {
 */
 
 
+int sethelp(nspace *search, asym *name, atom *link) {
+	if (!search) return 0;
+	if (eq(catom(name), catom(search->name)))
+	{
+		search->link = link;
+		return 1;
+	}
+	return sethelp(search->head, name, link);
+}
+
 atom *set(acons *args, nspace *n) {
 	if (!n)
 	{
@@ -221,12 +231,15 @@ atom *set(acons *args, nspace *n) {
 		return NULL;
 	}
 	
-	if (eq(args->car, catom(n->name)))
+	asym *name = csym(args->car);
+	atom *link = eval(ccons(args->cdr)->car, n);
+	
+	if (sethelp(n, name, link))
 	{
-		n->link = eval(ccons(args->cdr)->car, n);
-		return n->link;
+		return link;
 	}
-	return set(args, n->head);
+	printf("set!: undefined symbol\n");
+	return NULL;
 }
 
 
@@ -287,7 +300,7 @@ atom *lets(acons *args, nspace *n) {
 	return eval(ccons(args->cdr)->car, new);
 }
 
-/*
+
 atom *letrec(acons *args, nspace *n) {
 	if (lengthhelp(args) != 2) {
 		printf("letrec: expects 2 arguments\n");
@@ -305,23 +318,25 @@ atom *letrec(acons *args, nspace *n) {
 		if ((c = ccons(bl->car)) && *(c->car) == tsym && lengthhelp(c) == 2)
 		{
 			// legit list
-			new = define(new, csym(c->car), NULL);
+			n = define(n, csym(c->car), NULL);
 			bl = ccons(bl->cdr);
 		}
 		else
+		{
 			printf("let*: invalid let pair\n");
+			return NULL;
+		}
 	
 	bl = ccons(args->car);
 	
 	while (bl)
-		if ((c = ccons(bl->car)) && *(c->car) == tsym && lengthhelp(c) == 2)
-		{
-			// legit list
-			new = define(new, csym(c->car), NULL);
-			bl = ccons(bl->cdr);
-		}
+	{
+		c = ccons(bl->car);
+		sethelp(n, csym(c->car), eval(ccons(c->cdr)->car, n));
+		bl = ccons(bl->cdr);
+	}
 	
+	return eval(ccons(args->cdr)->car, n);
 }
-*/
 
 

@@ -42,6 +42,7 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("let")), newax(let));
 	n = define(n, csym(newsym("let*")), newax(lets));
 	n = define(n, csym(newsym("set!")), newax(set));
+	n = define(n, csym(newsym("letrec")), newax(letrec));
 	
 	for (;;) {
 		printf("> ");

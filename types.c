@@ -173,12 +173,6 @@ typedef struct afun {
 } afun;
 
 atom *newfun(atom *args, atom *body, nspace *n) {
-	printf("newfun\nargs [");
-	print(args);
-	printf("]\nbody [");
-	print(body);
-	printf("]\n");
-	
 	afun *ret = malloc(sizeof(afun));
 	ret->t = tfun;
 	ret->args = args;
