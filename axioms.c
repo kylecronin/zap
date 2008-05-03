@@ -71,11 +71,17 @@ atom *cdr(acons *args, nspace *n) {
 
 
 
+
+
+
+
 int listphelp(atom *p) {
 	if (!p)
 		return 1;
 	return (*p == tcons) && listphelp(ccons(p)->cdr);
 }
+
+
 
 atom *listp(acons *args, nspace *n) {
 	if (!args)
@@ -98,15 +104,52 @@ atom *length(acons *args, nspace *n) {
 	return newint(lengthhelp(eval(args->car, n)));
 }
 
+atom *cons(acons *args, nspace *n) {
+	if (!args || lengthhelp(catom(args)) != 2)
+	{
+		printf("cons: expects 2 arguments\n");
+		return NULL;
+	}
+	atom *car = eval(args->car, n), *cdr = eval(ccons(args->cdr)->car, n);
+	return newcons(car, cdr);
+}
+
+atom *aif(acons *args, nspace *n) {
+	if (!args || lengthhelp(catom(args)) != 3)
+	{
+		printf("if: expects 3 arguments\n");
+		return NULL;
+	}
+	if(eval(args->car, n) != f)
+		return eval(ccons(args->cdr)->car, n);
+	else
+		return eval(ccons(ccons(args->cdr)->cdr)->car, n);
+}
+
 
 atom *numeq(acons *args, nspace *n) {
 	if (!args)
 		return t;
-	
-	
-	
-	
-	
+	if (lengthhelp(catom(args)) >= 2)
+	{
+
+		aint *a = cint(eval(args->car, n)), *b = cint(eval(ccons(args->cdr)->car, n));
+		if (a && b)
+			if (lengthhelp(catom(args)) == 2)
+				return newbool(a->i == b->i);
+			else
+				return newbool(a->i == b->i && numeq(ccons(args->cdr), n) == t);
+		else
+		{
+			printf("=: not a number\n");
+			return NULL;
+		}
+	}
+	else
+	{
+		printf("=: expects at least 2 arguments\n");
+		return NULL;
+	}
 }
 
 atom *add(acons *args, nspace *n) {
@@ -121,6 +164,23 @@ atom *add(acons *args, nspace *n) {
 	else
 		return NULL;
 }
+
+/*atom *sub(acons *args, nspace *n) {
+	if (!args)
+	{
+		printf("-: expects at least 1 argument\n");
+		return NULL;
+	}
+	
+
+	aint *car = cint(eval(args->car, n));
+	aint *cdr = cint(add(ccons(args->cdr), n));
+	
+	if (car && cdr)
+		return newint(car->i + cdr->i);
+	else
+		return NULL;
+}*/
 
 
 

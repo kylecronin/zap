@@ -62,6 +62,9 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("list?")), newax(listp));
 	n = define(n, csym(newsym("car")), newax(car));
 	n = define(n, csym(newsym("cdr")), newax(cdr));
+	n = define(n, csym(newsym("=")), newax(numeq));
+	n = define(n, csym(newsym("cons")), newax(cons));
+	n = define(n, csym(newsym("if")), newax(aif));
 	
 	for (;;) {
 		printf("> ");

@@ -237,7 +237,15 @@ atom *read (char **input) {
 			if (**ip(input) == '\\')
 				ret = newchar(**ip(input));
 			else
-				printf("invalid # syntax\n");
+			{
+				if (**input == 't')
+					ret = newbool(1);
+				else if (**input == 'f')
+					ret = newbool(0);
+				else
+					printf("invalid # syntax\n");
+			}
+				
 			ip(input);
 			break;
 		case '\'':
@@ -308,6 +316,7 @@ void print (atom *x) {
 			case tchar: printf("#\\%c", cchar(x)->c); break;
 			case tstring: printf("\"%s\"", cstring(x)->s); break;
 			case tsym: printf("%s", csym(x)->s); break;
+			case tbool: printf(x == t ? "#t" : "#f"); break;
 			case tfun:
 				printf("#fun#");
 				break;
