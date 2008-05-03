@@ -56,6 +56,7 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("*")), newax(mult));
 	n = define(n, csym(newsym("exit")), newax(quit));
 	n = define(n, csym(newsym("lambda")), newax(lambda));
+	n = define(n, csym(newsym("define")), newax(def));
 	
 	for (;;) {
 		printf("> ");

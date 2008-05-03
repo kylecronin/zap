@@ -1,15 +1,9 @@
-atom *add(atom *args, nspace *n) {
+atom *add(acons *args, nspace *n) {
 	if (!args)
 		return newint(0);
-	if (*args != tcons)
-	{
-		printf("+: argument list makes no sense!\n");
-		return NULL;
-	}
-	
-	acons *al = ccons(args);
-	aint *car = cint(eval(al->car, n));
-	aint *cdr = cint(add(al->cdr, n));
+
+	aint *car = cint(eval(args->car, n));
+	aint *cdr = cint(add(ccons(args->cdr), n));
 	
 	if (car && cdr)
 		return newint(car->i + cdr->i);
@@ -17,22 +11,16 @@ atom *add(atom *args, nspace *n) {
 		return NULL;
 }
 
-atom *quit(atom *args, nspace *n) {
+atom *quit(acons *args, nspace *n) {
 	exit(0);
 }
 
-atom *mult(atom *args, nspace *n) {
+atom *mult(acons *args, nspace *n) {
 	if (!args)
 		return newint(1);
-	if (*args != tcons)
-	{
-		printf("*: argument list makes no sense!\n");
-		return NULL;
-	}
-	
-	acons *al = ccons(args);
-	aint *car = cint(eval(al->car, n));
-	aint *cdr = cint(mult(al->cdr, n));
+
+	aint *car = cint(eval(args->car, n));
+	aint *cdr = cint(mult(ccons(args->cdr), n));
 	
 	if (car && cdr)
 		return newint(car->i * cdr->i);
@@ -40,17 +28,33 @@ atom *mult(atom *args, nspace *n) {
 		return NULL;
 }
 
-atom *lambda(atom *args, nspace *n) {
-	if (!args || *args != tcons)
+atom *lambda(acons *args, nspace *n) {
+	if (!args)
 	{
 		printf("lambda: bad syntax\n");
 		return NULL;
 	}
-	acons *c = ccons(args);
-	if (!c->car || *(c->car) == tsym || *(c->car) == tcons)
-		if (c->cdr && *(c->cdr) == tcons)
-			return newfun(c->car, ccons(c->cdr)->car, n);		
+	
+	if (!args->car || *(args->car) == tsym || *(args->car) == tcons)
+		if (args->cdr && *(args->cdr) == tcons)
+			return newfun(args->car, ccons(args->cdr)->car, n);		
 
 	printf("lambda: bad syntax\n");
 	return NULL;
+}
+
+atom *def(acons *args, nspace *n) {
+	if (!args || *(args->car) != tsym)
+	{
+		printf("define: bad syntax\n");
+		return NULL;
+	}
+	atom *what = eval(ccons(args->cdr)->car, n);
+	
+	nspace *copy = malloc(sizeof(nspace));
+	*copy = *n;
+	
+	n->head = copy;
+	n->name = csym(args->car);
+	n->link = what;
 }

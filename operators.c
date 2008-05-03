@@ -69,11 +69,11 @@ atom *lookup(nspace *search, asym *name) {
 }
 
 
-atom* apply (afun*, atom*, nspace*);
+atom* apply (afun*, acons*, nspace*);
 atom* eval (atom*, nspace*);
 
 
-atom *apply (afun *fn, atom *args, nspace *n) {
+atom *apply (afun *fn, acons *args, nspace *n) {
 	nspace *x = fn->n;
 	if (*(fn->args) == tsym)
 		x = define(x, csym(fn->args), catom(args));
@@ -82,23 +82,21 @@ atom *apply (afun *fn, atom *args, nspace *n) {
 		atom *fargs = fn->args;
 		while (fargs && *fargs == tcons && args)
 		{
-			x = define(x, csym(ccons(fargs)->car), eval(ccons(args)->car, n));
-			args = ccons(args)->cdr;
+			x = define(x, csym(ccons(fargs)->car), eval(args->car, n));
+			args = ccons(args->cdr);
 			fargs = ccons(fargs)->cdr;
 		}
 		if (fargs && *fargs == tcons)
 			printf("too few arguments\n");
 		else
 			if (fargs)
-				x = define(x, csym(fargs), args);
+				x = define(x, csym(fargs), catom(args));
 			else
 				if (args)
 					printf("too many arguments\n");
 	}
 	
 	return eval(fn->body, x);
-	
-	//return (atom *) args;
 }
 
 /**
@@ -129,9 +127,9 @@ atom *eval (atom *expr, nspace *n) {
 			switch (*o)
 			{
 				case tfun:
-					return apply((afun *) o, c->cdr, n);
+					return apply((afun *) o, ccons(c->cdr), n);
 				case tax:
-					return (cax(o)->a)(c->cdr, n);
+					return (cax(o)->a)(ccons(c->cdr), n);
 				
 				
 			}

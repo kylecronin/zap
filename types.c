@@ -5,9 +5,16 @@
 #define catom(x) ((atom *) x)
 
 
+
+
+
 typedef enum {
 	tcons, tint, tchar, tfun, tstring, tsym, tbool, tax
 } atom;
+
+atom* readlist (char**);
+atom* read (char**);
+void print (atom*);
 
 
 atom sect = tbool, secf = tbool;
@@ -35,7 +42,9 @@ atom *newcons(atom *car, atom *cdr) {
 acons *ccons(atom *x) {
 	if (x && *x == tcons)
 		return (acons *) x;
-	printf("bad cons cast\n");
+	// I've decided that null is a legit cons cast
+	if (x)
+		printf("bad cons cast\n"); 
 	return NULL;
 }
 
@@ -138,10 +147,10 @@ nspace *define(nspace *head, asym *name, atom *link) {
 
 typedef struct aax {
 	atom t;
-	atom *(*a)(atom*, nspace*);
+	atom *(*a)(acons*, nspace*);
 } aax;
 
-atom *newax(atom *(*a)(atom*, nspace*)) {
+atom *newax(atom *(*a)(acons*, nspace*)) {
 	aax *ret = malloc(sizeof(aax));
 	ret->t = tax;
 	ret->a = a;
@@ -180,9 +189,7 @@ afun *cfun(atom *x) {
 }
 
 
-atom* readlist (char**);
-atom* read (char**);
-void print (atom*);
+
 
 char **cw (char **p) { while (**p == ' ') (*p)++; return p; }
 char **ip (char **p) { (*p)++; return p; }
