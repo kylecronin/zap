@@ -44,17 +44,32 @@ atom *lambda(acons *args, nspace *n) {
 }
 
 atom *def(acons *args, nspace *n) {
-	if (!args || *(args->car) != tsym)
+	if (!args)
 	{
 		printf("define: bad syntax\n");
 		return NULL;
 	}
-	atom *what = eval(ccons(args->cdr)->car, n);
+	atom *what;
+	asym *name;
+	
+	switch (*(args->car))
+	{
+		case tsym:
+			name = csym(args->car);
+			what = eval(ccons(args->cdr)->car, n);
+			break;
+		case tcons:
+			name = csym(ccons(args->car)->car);
+			what = lambda(ccons(newcons(ccons(args->car)->cdr, args->cdr)), n);
+			break;
+	}
 	
 	nspace *copy = malloc(sizeof(nspace));
 	*copy = *n;
-	
+
 	n->head = copy;
-	n->name = csym(args->car);
+	n->name = name;
 	n->link = what;
+	return what;
+	
 }

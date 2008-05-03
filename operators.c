@@ -106,11 +106,11 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 atom *eval (atom *expr, nspace *n) {
 	if (!expr) return expr;
 	
-/*	printf("eval [");
+	/*printf("eval [");
 	print(expr);
 	printf("] in [");
 	printns(n);
-	printf("]\n"); */
+	printf("]\n");*/ 
 	
 	acons *c;
 	atom *o;
