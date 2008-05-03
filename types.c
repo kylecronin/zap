@@ -6,7 +6,7 @@
 
 
 typedef enum {
-	tcons, tint, tchar, tfun, tstring, tsym, tbool
+	tcons, tint, tchar, tfun, tstring, tsym, tbool, tax
 } atom;
 
 
@@ -15,6 +15,18 @@ atom *t = &sect, *f = &secf;
 
 atom *newbool(int val) {
 	return val ? t : f;
+}
+
+typedef struct aax {
+	atom t;
+	atom *(*a)(atom *);
+} aax;
+
+atom *newax(atom *(*a)(atom *)) {
+	aax *ret = malloc(sizeof(aax));
+	ret->t = tax;
+	ret->a = a;
+	return (atom *) ret;
 }
 
 

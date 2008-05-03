@@ -18,6 +18,27 @@
 	us to keep the functions intact as they are defined. This would even allow
 	us to create a new namespace for each time the function is called, and
 	allow the expression to simply evaluate itself.
+	
+	OK, more on the namespace - there is a small problem I'm having with
+	reconciling the current linked list namespace and the definition of
+	mutually recursive functions. There are basically two ways of handling
+	this: the first is to do a rewrite of the namespace, which is something
+	I don't want to do, to be something more amenable to change. The second
+	is something that I initially rejected but am growing more fond of, and
+	that is overwriting the nspace object with a new nspace object.
+	
+	
+	OOH, better still, I can just postpend (instead of prepending). Well, this
+	might not work for using define to redefine an object. I tend to like the
+	idea that the most recent should be at the top. Prepending it is.
+	
+	
+	I also need to consider how to handle "axiomatic" operations. I have a
+	feeling that I will want to define all user reachable operations in
+	"software" and have them call the "hardware" operations. How do I do this?
+	
+	I think I'll just define an axiomatic type, tax, and just have a switch
+	inside eval.
 
 **/
 

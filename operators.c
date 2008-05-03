@@ -69,11 +69,11 @@ atom *lookup(nspace *search, asym *name) {
 }
 
 
-atom* apply (afun*, atom*);
+atom* apply (afun*, atom*, nspace*);
 atom* eval (atom*, nspace*);
 
 
-atom *apply (afun *fn, atom *args) {
+atom *apply (afun *fn, atom *args, nspace *n) {
 	nspace *x = fn->n;
 	if (*(fn->args) == tsym)
 		x = define(x, csym(fn->args), catom(args));
@@ -82,7 +82,7 @@ atom *apply (afun *fn, atom *args) {
 		atom *fargs = fn->args;
 		while (fargs && *fargs == tcons && args)
 		{
-			x = define(x, csym(ccons(fargs)->car), ccons(args)->car);
+			x = define(x, csym(ccons(fargs)->car), eval(ccons(args)->car, n));
 			args = ccons(args)->cdr;
 			fargs = ccons(fargs)->cdr;
 		}
@@ -108,6 +108,12 @@ atom *apply (afun *fn, atom *args) {
 atom *eval (atom *expr, nspace *n) {
 	if (!expr) return expr;
 	
+/*	printf("eval [");
+	print(expr);
+	printf("] in [");
+	printns(n);
+	printf("]\n"); */
+	
 	acons *c;
 	atom *o;
 	
@@ -116,7 +122,7 @@ atom *eval (atom *expr, nspace *n) {
 			c = (acons *) expr;
 			o = eval(c->car, n);
 			if (o && *o == tfun)
-				return apply((afun *) o, c->cdr);
+				return apply((afun *) o, c->cdr, n);
 			else
 				printf("invalid procedure");
 			break;
