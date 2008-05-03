@@ -53,6 +53,7 @@ int main (int argc, const char * argv[]) {
 	atom *fn = newfun(newcons(newsym("x"), NULL), newsym("x"), n);
 	n = define(n, (asym *) newsym("identity"), fn);
 	n = define(n, csym(newsym("+")), newax(add));
+	n = define(n, csym(newsym("-")), newax(sub));
 	n = define(n, csym(newsym("*")), newax(mult));
 	n = define(n, csym(newsym("exit")), newax(quit));
 	n = define(n, csym(newsym("lambda")), newax(lambda));

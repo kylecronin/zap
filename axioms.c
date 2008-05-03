@@ -165,22 +165,22 @@ atom *add(acons *args, nspace *n) {
 		return NULL;
 }
 
-/*atom *sub(acons *args, nspace *n) {
+atom *sub(acons *args, nspace *n) {
 	if (!args)
 	{
 		printf("-: expects at least 1 argument\n");
 		return NULL;
 	}
+	int len = lengthhelp(catom(args));
 	
-
-	aint *car = cint(eval(args->car, n));
-	aint *cdr = cint(add(ccons(args->cdr), n));
-	
-	if (car && cdr)
-		return newint(car->i + cdr->i);
-	else
-		return NULL;
-}*/
+	if (*(args->car) == tint)
+		if (len == 1)
+			return newint(0 - cint(args->car)->i);
+		else
+			return newint(cint(args->car)->i - cint(add(ccons(args->cdr), n))->i);
+	printf("-: not a number\n");
+	return NULL;
+}
 
 
 
