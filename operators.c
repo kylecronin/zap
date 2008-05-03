@@ -110,7 +110,7 @@ atom *eval (atom *expr, nspace *n) {
 	print(expr);
 	printf("] in [");
 	printns(n);
-	printf("]\n");*/ 
+	printf("]\n");*/
 	
 	acons *c;
 	atom *o;

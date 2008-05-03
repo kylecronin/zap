@@ -286,9 +286,7 @@ void printns (nspace *n) {
 		printns(n->head);
 	}
 	else
-	{
 		printf("end ns");
-	}
 }
 
 

@@ -172,12 +172,13 @@ atom *sub(acons *args, nspace *n) {
 		return NULL;
 	}
 	int len = lengthhelp(catom(args));
+	aint *car = cint(eval(args->car, n));
 	
-	if (*(args->car) == tint)
+	if (car)
 		if (len == 1)
-			return newint(0 - cint(args->car)->i);
+			return newint(0 - car->i);
 		else
-			return newint(cint(args->car)->i - cint(add(ccons(args->cdr), n))->i);
+			return newint(car->i - cint(add(ccons(args->cdr), n))->i);
 	printf("-: not a number\n");
 	return NULL;
 }
