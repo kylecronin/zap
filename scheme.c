@@ -66,6 +66,7 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("=")), newax(numeq));
 	n = define(n, csym(newsym("cons")), newax(cons));
 	n = define(n, csym(newsym("if")), newax(aif));
+	n = define(n, csym(newsym("null?")), newax(nullp));
 	
 	for (;;) {
 		printf("> ");

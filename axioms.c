@@ -85,20 +85,23 @@ atom *listp(acons *args, nspace *n) {
 	return newbool(listphelp(eval(args->car, n)));
 }
 
-int lengthhelp(atom *p) {
+
+
+int lengthhelp(acons *p) {
 	if (!p)
 		return 0;
-	return 1 + lengthhelp(ccons(p)->cdr);
+	return 1 + lengthhelp(ccons(p->cdr));
 }
 
 atom *length(acons *args, nspace *n) {
-	if (!listphelp(args->car))
+	atom *what = eval(args->car, n);
+	if (!listphelp(what))
 		printf("length: invalid list\n");
-	return newint(lengthhelp(eval(args->car, n)));
+	return newint(lengthhelp(ccons(what)));
 }
 
 atom *cons(acons *args, nspace *n) {
-	if (!args || lengthhelp(catom(args)) != 2)
+	if (!args || lengthhelp(args) != 2)
 	{
 		printf("cons: expects 2 arguments\n");
 		return NULL;
@@ -108,7 +111,7 @@ atom *cons(acons *args, nspace *n) {
 }
 
 atom *aif(acons *args, nspace *n) {
-	if (!args || lengthhelp(catom(args)) != 3)
+	if (!args || lengthhelp(args) != 3)
 	{
 		printf("if: expects 3 arguments\n");
 		return NULL;
@@ -123,12 +126,13 @@ atom *aif(acons *args, nspace *n) {
 atom *numeq(acons *args, nspace *n) {
 	if (!args)
 		return t;
-	if (lengthhelp(catom(args)) >= 2)
+	if (lengthhelp(args) >= 2)
 	{
 
-		aint *a = cint(eval(args->car, n)), *b = cint(eval(ccons(args->cdr)->car, n));
+		aint 	*a = cint(eval(args->car, n)),
+				*b = cint(eval(ccons(args->cdr)->car, n));
 		if (a && b)
-			if (lengthhelp(catom(args)) == 2)
+			if (lengthhelp(args) == 2)
 				return newbool(a->i == b->i);
 			else
 				return newbool(a->i == b->i && numeq(ccons(args->cdr), n) == t);
@@ -143,6 +147,16 @@ atom *numeq(acons *args, nspace *n) {
 		printf("=: expects at least 2 arguments\n");
 		return NULL;
 	}
+}
+
+atom *nullp(acons *args, nspace *n) {
+	if (lengthhelp(args) == 1)
+	{
+		atom *what = eval(args->car, n);
+		return what ? f : t;
+	}
+	printf("null?: expects 1 argument\n");
+	return NULL;
 }
 
 atom *add(acons *args, nspace *n) {
@@ -164,7 +178,7 @@ atom *sub(acons *args, nspace *n) {
 		printf("-: expects at least 1 argument\n");
 		return NULL;
 	}
-	int len = lengthhelp(catom(args));
+	int len = lengthhelp(args);
 	aint *car = cint(eval(args->car, n));
 	
 	if (car)
