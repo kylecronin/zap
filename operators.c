@@ -121,10 +121,20 @@ atom *eval (atom *expr, nspace *n) {
 		case tcons:
 			c = (acons *) expr;
 			o = eval(c->car, n);
-			if (o && *o == tfun)
-				return apply((afun *) o, c->cdr, n);
-			else
-				printf("invalid procedure");
+			if (!o)
+			{
+				printf("invalid procedure: null\n");
+				return NULL;
+			}
+			switch (*o)
+			{
+				case tfun:
+					return apply((afun *) o, c->cdr, n);
+				case tax:
+					return (cax(o)->a)(c->cdr, n);
+				
+				
+			}
 			break;
 		case tsym:
 			return lookup(n, (asym *) expr);

@@ -17,17 +17,7 @@ atom *newbool(int val) {
 	return val ? t : f;
 }
 
-typedef struct aax {
-	atom t;
-	atom *(*a)(atom *);
-} aax;
 
-atom *newax(atom *(*a)(atom *)) {
-	aax *ret = malloc(sizeof(aax));
-	ret->t = tax;
-	ret->a = a;
-	return (atom *) ret;
-}
 
 
 typedef struct acons {
@@ -145,6 +135,26 @@ nspace *define(nspace *head, asym *name, atom *link) {
 	ret->link = link;
 	return ret;	
 }
+
+typedef struct aax {
+	atom t;
+	atom *(*a)(atom*, nspace*);
+} aax;
+
+atom *newax(atom *(*a)(atom*, nspace*)) {
+	aax *ret = malloc(sizeof(aax));
+	ret->t = tax;
+	ret->a = a;
+	return (atom *) ret;
+}
+
+aax *cax(atom *x)
+{
+	if (x && *x == tax)
+		return (aax *) x;
+	return NULL;
+}
+
 
 
 typedef struct afun {

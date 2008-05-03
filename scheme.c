@@ -3,6 +3,7 @@
 
 #include "types.c"
 #include "operators.c"
+#include "axioms.c"
 
 /**
 
@@ -51,6 +52,7 @@ int main (int argc, const char * argv[]) {
 	
 	atom *fn = newfun(newcons(newsym("x"), NULL), newsym("x"), n);
 	n = define(n, (asym *) newsym("identity"), fn);
+	n = define(n, csym(newsym("+")), newax(add));
 	
 	for (;;) {
 		printf("> ");
