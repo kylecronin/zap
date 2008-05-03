@@ -68,13 +68,6 @@ atom *cdr(acons *args, nspace *n) {
 	return NULL;
 }
 
-
-
-
-
-
-
-
 int listphelp(atom *p) {
 	if (!p)
 		return 1;
