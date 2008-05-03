@@ -9,7 +9,7 @@ and interpreter in C, and what you see is the result of that effort.
 
 This is not intended to be anything more than my learning the finer points of
 C and Scheme. Also, while this is now publicly hosted on GitHub, I have not
-gone through the finer points of choosing a distribution license as I don't
+gone through the process of choosing a distribution license as I don't
 think any code here has any tangible value.
 
 One other thing - this is also where I have done some experimentation and
