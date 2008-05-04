@@ -9,7 +9,7 @@
 
 
 typedef enum {
-	tcons, tint, tchar, tfun, tstring, tsym, tbool, tax
+	tcons, tint, tchar, tfun, tstring, tsym, tbool, tax, tmac
 } atom;
 
 atom* readlist (char**);

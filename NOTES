@@ -1,4 +1,3 @@
-TODO allow multiple lines to be evaluated in a function
 TODO create scheme init file, move all possible functions there
 TODO increase reader robustness (newline)
 TODO add support for rationals, floating point, and bigint
@@ -6,11 +5,13 @@ TODO add support for continuations
 TODO add support for macros (common lisp style)
 TODO add garbage collection
 
-OK, I'm going to work on multi-line evals. I'm going to just use the evallist
-function and return the last value. Alternatively, I could just use begin
-and hardcode it into the few functions that need to eval multiple expressions.
-What expressions are those? define, lambda, let[*|rec] ... Actually, that
-might be it.
+
+
+
+Macros
+
+In this implementation, macros can be represented as functions. The trick is
+to pass in the appropriate namespace. I think I'll just add a tmac 
 
 
 

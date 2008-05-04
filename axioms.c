@@ -29,6 +29,16 @@ atom *lambda(acons *args, nspace *n) {
 	return NULL;
 }
 
+atom *defhelp(asym *name, atom *what, nspace *n) {
+	nspace *copy = malloc(sizeof(nspace));
+	*copy = *n;
+
+	n->head = copy;
+	n->name = name;
+	n->link = what;
+	return what;
+}
+
 atom *def(acons *args, nspace *n) {
 	if (!args)
 	{
@@ -50,14 +60,14 @@ atom *def(acons *args, nspace *n) {
 			break;
 	}
 	
-	nspace *copy = malloc(sizeof(nspace));
-	*copy = *n;
+	return defhelp(name, what, n);
+}
 
-	n->head = copy;
-	n->name = name;
-	n->link = what;
-	return what;
-	
+atom *defmacro(acons *args, nspace *n) {
+	asym *name = csym(ccons(args->car)->car);
+	atom *what = lambda(ccons(newcons(ccons(args->car)->cdr, args->cdr)), n);
+	*what = tmac;
+	return defhelp(name, what, n);
 }
 
 atom *quote(acons *args, nspace *n) {

@@ -49,6 +49,7 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("begin")), newax(begin));
 	n = define(n, csym(newsym("equal?")), newax(equal));
 	n = define(n, csym(newsym("print")), newax(sprint));
+	n = define(n, csym(newsym("defmacro")), newax(defmacro));
 	
 	for (;;) {
 		printf("> ");

@@ -78,17 +78,9 @@ atom* evallist (acons*, nspace*);
 
 atom *apply (afun *fn, acons *args, nspace *n) {
 	
-	/*printf("apply [");
-	print(catom(fn));
-	printf("]");
-	printf(" to [");
-	print(catom(args));
-	printf("]");
-	printf(" in [");
-	printns(n);
-	printf("]"); 
-	printf("\n");*/
-	
+	/*printf("apply ["); print(catom(fn)); printf("]");
+	printf(" to ["); print(catom(args)); printf("]");
+	printf(" in ["); printns(n); printf("]"); printf("\n");*/
 	
 	nspace *x = fn->n;
 	if (args)
@@ -113,6 +105,8 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 						printf("too many arguments\n");
 		}
 	
+	if (*catom(fn) == tfun)
+		return begin(fn->body, x);
 	return begin(fn->body, n);
 }
 
@@ -147,7 +141,7 @@ atom *eval (atom *expr, nspace *n) {
 			}
 			switch (*o)
 			{
-				case tfun:
+				case tfun: case tmac:
 					return apply((afun *) o, ccons(c->cdr), n);
 				case tax:
 					return (cax(o)->a)(ccons(c->cdr), n);
