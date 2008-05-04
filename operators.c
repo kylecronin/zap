@@ -73,11 +73,12 @@ atom *lookup(nspace *search, asym *name) {
 
 atom* apply (afun*, acons*, nspace*);
 atom* eval (atom*, nspace*);
+atom* evallist (acons*, nspace*);
 
 
 atom *apply (afun *fn, acons *args, nspace *n) {
 	
-	printf("apply [");
+	/*printf("apply [");
 	print(catom(fn));
 	printf("]");
 	printf(" to [");
@@ -86,13 +87,16 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 	printf(" in [");
 	printns(n);
 	printf("]"); 
-	printf("\n");
+	printf("\n");*/
 	
 	
 	nspace *x = fn->n;
 	if (args)
-		if (*(fn->args) == tsym)
-			x = define(x, csym(fn->args), catom(args));
+		if (*(fn->args) == tsym)		// you see here no eval
+										// I guess it was assumed that the
+										// namespace would be appended, not
+										// modified
+			x = define(x, csym(fn->args), evallist(args, n));
 		else
 		{
 			atom *fargs = fn->args;
@@ -106,7 +110,7 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 				printf("too few arguments\n");
 			else
 				if (fargs)
-					x = define(x, csym(fargs), catom(args));
+					x = define(x, csym(fargs), evallist(args, n));
 				else
 					if (args)
 						printf("too many arguments\n");
@@ -123,13 +127,13 @@ atom *eval (atom *expr, nspace *n) {
 	if (!expr) return expr;
 	
 	
-	printf("eval [");
+/*	printf("eval [");
 	print(expr);
 	printf("]");
 	printf(" in [");
 	printns(n);
 	printf("]"); 
-	printf("\n");
+	printf("\n");*/
 	
 	
 	acons *c;
@@ -159,4 +163,10 @@ atom *eval (atom *expr, nspace *n) {
 		default:
 			return expr;
 	}
+}
+
+atom *evallist (acons *list, nspace *n) {
+	if (!list)
+		return NULL;
+	return newcons(eval(list->car, n), evallist(ccons(list->cdr), n));
 }

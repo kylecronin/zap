@@ -1,0 +1,6 @@
+TODO allow multiple lines to be evaluated in a function
+TODO create scheme init file, move all possible functions there
+TODO increase reader robustness (newline)
+TODO add support for rationals, floating point, and bigint
+TODO add support for continuations
+TODO add support for macros (common lisp style)
