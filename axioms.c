@@ -251,8 +251,8 @@ atom *set(acons *args, nspace *n) {
 }
 
 atom *let(acons *args, nspace *n) {
-	if (lengthhelp(args) != 2) {
-		printf("let: expects 2 arguments\n");
+	if (lengthhelp(args) < 2) {
+		printf("let: expects at least 2 arguments\n");
 		return NULL;
 	}
 	if (!listphelp(args->car))
@@ -274,12 +274,12 @@ atom *let(acons *args, nspace *n) {
 		else
 			printf("let: invalid let pair\n");
 	
-	return eval(ccons(args->cdr)->car, new);
+	return begin(ccons(args->cdr), new);
 }
 
 atom *lets(acons *args, nspace *n) {
-	if (lengthhelp(args) != 2) {
-		printf("let*: expects 2 arguments\n");
+	if (lengthhelp(args) < 2) {
+		printf("let*: expects at least 2 arguments\n");
 		return NULL;
 	}
 	if (!listphelp(args->car))
@@ -301,7 +301,7 @@ atom *lets(acons *args, nspace *n) {
 		else
 			printf("let*: invalid let pair\n");
 	
-	return eval(ccons(args->cdr)->car, new);
+	return begin(ccons(args->cdr), new);
 }
 
 atom *letrec(acons *args, nspace *n) {
