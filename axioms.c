@@ -305,8 +305,8 @@ atom *lets(acons *args, nspace *n) {
 }
 
 atom *letrec(acons *args, nspace *n) {
-	if (lengthhelp(args) != 2) {
-		printf("letrec: expects 2 arguments\n");
+	if (lengthhelp(args) < 2) {
+		printf("letrec: expects at least 2 arguments\n");
 		return NULL;
 	}
 	if (!listphelp(args->car))
@@ -339,7 +339,7 @@ atom *letrec(acons *args, nspace *n) {
 		bl = ccons(bl->cdr);
 	}
 	
-	return eval(ccons(args->cdr)->car, n);
+	return begin(ccons(args->cdr), n);
 }
 
 atom *sapply(acons *args, nspace *n) {
