@@ -92,7 +92,10 @@ int lengthhelp(acons *p) {
 atom *length(acons *args, nspace *n) {
 	atom *what = eval(args->car, n);
 	if (!listphelp(what))
+	{
 		printf("length: invalid list\n");
+		return NULL;
+	}
 	return newint(lengthhelp(ccons(what)));
 }
 
@@ -164,7 +167,10 @@ atom *add(acons *args, nspace *n) {
 	if (car && cdr)
 		return newint(car->i + cdr->i);
 	else
+	{
+		printf("+: bad int\n");
 		return NULL;
+	}
 }
 
 atom *sub(acons *args, nspace *n) {
@@ -195,7 +201,10 @@ atom *mult(acons *args, nspace *n) {
 	if (car && cdr)
 		return newint(car->i * cdr->i);
 	else
+	{
+		printf("*: bad int\n");
 		return NULL;
+	}
 }
 
 int sethelp(nspace *search, asym *name, atom *link) {
@@ -224,9 +233,7 @@ atom *set(acons *args, nspace *n) {
 	atom *link = eval(ccons(args->cdr)->car, n);
 	
 	if (sethelp(n, name, link))
-	{
 		return link;
-	}
 	printf("set!: undefined symbol\n");
 	return NULL;
 }
@@ -322,5 +329,93 @@ atom *letrec(acons *args, nspace *n) {
 	
 	return eval(ccons(args->cdr)->car, n);
 }
+
+atom *sapply(acons *args, nspace *n) {
+	
+	afun *fn = cfun(eval(args->car, n));
+	acons *fa = ccons(eval(ccons(args->cdr)->car, n));
+	
+	return apply(fn, fa, n);
+	
+	
+	// return eval(newcons(eval(args->car, n), eval(ccons(args->cdr)->car, n)), n);
+	
+	//return eval(catom(args), n);
+}
+
+atom *or(acons *args, nspace *n) {
+	if (!args)
+		return f;
+	atom *val = eval(args->car, n);
+	if (val == f)
+		return or(ccons(args->cdr), n);
+	return val;
+}
+
+atom *begin(acons *args, nspace *n) {
+	if (args)
+	{
+		atom *val = eval(args->car, n);
+		if (args->cdr)
+			return begin(ccons(args->cdr), n);
+		return val;
+	}
+	return NULL;
+}
+
+int equalhelp(atom *a, atom *b) {
+	/*printf("eh a=");
+	print(a);
+	printf(", b=");
+	print(b);
+	printf("\n");*/
+	
+	if (a && b && *a == *b && *a == tcons) {		
+		return	equalhelp(ccons(a)->car, ccons(b)->car) &&
+				equalhelp(ccons(a)->cdr, ccons(b)->cdr);
+	}
+	return eq(a, b);
+}
+
+
+atom *equal(acons *args, nspace *n) {
+	if (lengthhelp(args) != 2) {
+		printf("equal?: expected 2 arguments\n");
+		return NULL;
+	}
+	
+	return newbool(equalhelp(	eval(args->car, n),
+								eval(ccons(args->cdr)->car, n)));
+}
+
+atom *sprint(acons *args, nspace *n) {
+	if (args)
+	{
+		print(eval(args->car, n));
+		return sprint(ccons(args->cdr), n);
+	}
+	return NULL;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

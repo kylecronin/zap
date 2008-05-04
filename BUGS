@@ -1,0 +1,79 @@
+I've spent the last several hours attempting to reproduce and fix a bug that
+I discovered when attempting to test my memoization function that I've
+previously written.
+
+Without all the baggage of the memoization function, the bug can be reliably
+reproduced with the following statements:
+
+(define (iden fn) (lambda args (apply fn args)))
+
+(define fact (iden (lambda (x) (if (= x 0) 1 (* x (fact (- x 1)))))))
+
+Here is the trace of the program:
+
+Valencia:SchemeInC kyle$ gcc scheme.c && ./a.out
+warning: this program uses gets(), which is unsafe.
+> (define (iden fn) (lambda args (apply fn args)))    
+eval [(define (iden fn) (lambda args (apply fn args)))] in []
+eval [define] in []
+#fun#
+> (define fact (iden (lambda (x) (if (= x 0) 1 (* x (fact (- x 1)))))))  
+eval [(define fact (iden (lambda (x) (if (= x 0) 1 (* x (fact (- x 1)))))))] in [iden -> #fun#, ]
+eval [define] in [iden -> #fun#, ]
+eval [(iden (lambda (x) (if (= x 0) 1 (* x (fact (- x 1))))))] in [iden -> #fun#, ]
+eval [iden] in [iden -> #fun#, ]
+apply [#fun#] to [((lambda (x) (if (= x 0) 1 (* x (fact (- x 1))))))] in [iden -> #fun#, ]
+eval [(lambda (x) (if (= x 0) 1 (* x (fact (- x 1)))))] in [iden -> #fun#, ]
+eval [lambda] in [iden -> #fun#, ]
+eval [(lambda args (apply fn args))] in [fn -> #fun#, iden -> #fun#, ]
+eval [lambda] in [fn -> #fun#, iden -> #fun#, ]
+#fun#
+> (fact 3)
+eval [(fact 3)] in [fact -> #fun#, iden -> #fun#, ]
+eval [fact] in [fact -> #fun#, iden -> #fun#, ]
+apply [#fun#] to [(3)] in [fact -> #fun#, iden -> #fun#, ]
+eval [(apply fn args)] in [args -> (3), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [apply] in [args -> (3), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [fn] in [args -> (3), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [args] in [args -> (3), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+apply [#fun#] to [(3)] in [args -> (3), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [3] in [args -> (3), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [(if (= x 0) 1 (* x (fact (- x 1))))] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [if] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [(= x 0)] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [=] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [x] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [0] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [(* x (fact (- x 1)))] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [*] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [x] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [(fact (- x 1))] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+eval [fact] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+*apply [#fun#] to [((- x 1))] in [x -> 3, fact -> #fun#, iden -> #fun#, ]
+*eval [(apply fn args)] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [apply] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [fn] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [args] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+apply [#fun#] to [((- x 1))] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [(- x 1)] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [-] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+eval [x] in [args -> ((- x 1)), fn -> #fun#, fact -> #fun#, iden -> #fun#, ]
+bad int cast
+-: not a number
+eval [(if (= x 0) 1 (* x (fact (- x 1))))] in [x -> (), fact -> #fun#, iden -> #fun#, ]
+eval [if] in [x -> (), fact -> #fun#, iden -> #fun#, ]
+eval [(= x 0)] in [x -> (), fact -> #fun#, iden -> #fun#, ]
+eval [=] in [x -> (), fact -> #fun#, iden -> #fun#, ]
+eval [x] in [x -> (), fact -> #fun#, iden -> #fun#, ]
+bad int cast
+eval [0] in [x -> (), fact -> #fun#, iden -> #fun#, ]
+=: not a number
+eval [1] in [x -> (), fact -> #fun#, iden -> #fun#, ]
+3
+> 
+
+The starred lines are indicating where the bug appears. What happens is that
+(- x 1) is not evaluated with x->3 before it's sent to eval. Because x is
+bound in a closure, it's impossible to do the required evaluation there.
+
+However, when I look over the apply function, it seems to work fine.

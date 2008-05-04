@@ -17,10 +17,10 @@
 
 
 int main (int argc, const char * argv[]) {
-	char buff[256];
+	char buff[8192];
 	char *p;
 	nspace *n = NULL;
-	n = define(n, (asym *) newsym("x"), newint(3));
+	//n = define(n, (asym *) newsym("x"), newint(3));
 	
 	atom *fn = newfun(newcons(newsym("x"), NULL), newsym("x"), n);
 	n = define(n, (asym *) newsym("identity"), fn);
@@ -43,6 +43,11 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("let*")), newax(lets));
 	n = define(n, csym(newsym("set!")), newax(set));
 	n = define(n, csym(newsym("letrec")), newax(letrec));
+	n = define(n, csym(newsym("apply")), newax(sapply));
+	n = define(n, csym(newsym("or")), newax(or));
+	n = define(n, csym(newsym("begin")), newax(begin));
+	n = define(n, csym(newsym("equal?")), newax(equal));
+	n = define(n, csym(newsym("print")), newax(sprint));
 	
 	for (;;) {
 		printf("> ");

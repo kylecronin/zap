@@ -46,6 +46,8 @@
 
 
 int eq(atom *a, atom *b) {
+	if (!a || !b)
+		return !a && !b;
 	if (*a != *b) return 0;
 	
 	switch (*a) {
@@ -74,6 +76,19 @@ atom* eval (atom*, nspace*);
 
 
 atom *apply (afun *fn, acons *args, nspace *n) {
+	
+	printf("apply [");
+	print(catom(fn));
+	printf("]");
+	printf(" to [");
+	print(catom(args));
+	printf("]");
+	printf(" in [");
+	printns(n);
+	printf("]"); 
+	printf("\n");
+	
+	
 	nspace *x = fn->n;
 	if (args)
 		if (*(fn->args) == tsym)
@@ -107,11 +122,15 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 atom *eval (atom *expr, nspace *n) {
 	if (!expr) return expr;
 	
-	/*printf("eval [");
+	
+	printf("eval [");
 	print(expr);
-	printf("] in [");
+	printf("]");
+	printf(" in [");
 	printns(n);
-	printf("]\n");*/
+	printf("]"); 
+	printf("\n");
+	
 	
 	acons *c;
 	atom *o;

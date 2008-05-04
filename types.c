@@ -44,7 +44,10 @@ acons *ccons(atom *x) {
 		return (acons *) x;
 	// I've decided that null is a legit cons cast
 	if (x)
-		printf("bad cons cast\n"); 
+	{
+		printf("bad cons cast: ");
+		print(x);
+	} 
 	return NULL;
 }
 
@@ -277,7 +280,7 @@ atom *read (char **input) {
 }
 
 void printns (nspace *n) {
-	if (n)
+	if (n && !eq(catom(n->name), newsym("print")))
 	{
 		print(catom(n->name));
 		printf(" -> ");
@@ -285,8 +288,8 @@ void printns (nspace *n) {
 		printf(", ");
 		printns(n->head);
 	}
-	else
-		printf("end ns");
+	//else
+	//	printf("end ns");
 }
 
 
