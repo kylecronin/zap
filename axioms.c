@@ -1,3 +1,15 @@
+atom *begin(acons *args, nspace *n) {
+	if (args)
+	{
+		atom *val = eval(args->car, n);
+		if (args->cdr)
+			return begin(ccons(args->cdr), n);
+		return val;
+	}
+	return NULL;
+}
+
+
 atom *quit(acons *args, nspace *n) {
 	exit(0);
 }
@@ -11,7 +23,7 @@ atom *lambda(acons *args, nspace *n) {
 	
 	if (!args->car || *(args->car) == tsym || *(args->car) == tcons)
 		if (args->cdr && *(args->cdr) == tcons)
-			return newfun(args->car, ccons(args->cdr)->car, n);		
+			return newfun(args->car, ccons(args->cdr), n);		
 
 	printf("lambda: bad syntax\n");
 	return NULL;
@@ -352,16 +364,7 @@ atom *or(acons *args, nspace *n) {
 	return val;
 }
 
-atom *begin(acons *args, nspace *n) {
-	if (args)
-	{
-		atom *val = eval(args->car, n);
-		if (args->cdr)
-			return begin(ccons(args->cdr), n);
-		return val;
-	}
-	return NULL;
-}
+
 
 int equalhelp(atom *a, atom *b) {
 	/*printf("eh a=");

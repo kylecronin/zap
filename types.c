@@ -172,10 +172,11 @@ aax *cax(atom *x)
 typedef struct afun {
 	atom t;// = tfun;
 	nspace *n;
-	atom *args, *body;
+	atom *args;
+	acons *body;
 } afun;
 
-atom *newfun(atom *args, atom *body, nspace *n) {
+atom *newfun(atom *args, acons *body, nspace *n) {
 	afun *ret = malloc(sizeof(afun));
 	ret->t = tfun;
 	ret->args = args;
@@ -324,7 +325,7 @@ void print (atom *x) {
 				printf("args: [");
 				print(cfun(x)->args);
 				printf("] body: [");
-				print(cfun(x)->body);
+				print(catom(cfun(x)->body));
 				printf("] ns: [");
 				printns(cfun(x)->n);
 				printf("]");

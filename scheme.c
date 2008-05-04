@@ -22,7 +22,8 @@ int main (int argc, const char * argv[]) {
 	nspace *n = NULL;
 	//n = define(n, (asym *) newsym("x"), newint(3));
 	
-	atom *fn = newfun(newcons(newsym("x"), NULL), newsym("x"), n);
+	atom *fn = newfun(newcons(newsym("x"), NULL),
+				ccons(newcons(newsym("x"), NULL)), n);
 	n = define(n, (asym *) newsym("identity"), fn);
 	n = define(n, csym(newsym("+")), newax(add));
 	n = define(n, csym(newsym("-")), newax(sub));

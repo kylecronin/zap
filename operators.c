@@ -43,7 +43,7 @@
 
 **/
 
-
+atom *begin(acons*, nspace*);
 
 int eq(atom *a, atom *b) {
 	if (!a || !b)
@@ -92,10 +92,7 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 	
 	nspace *x = fn->n;
 	if (args)
-		if (*(fn->args) == tsym)		// you see here no eval
-										// I guess it was assumed that the
-										// namespace would be appended, not
-										// modified
+		if (*(fn->args) == tsym)
 			x = define(x, csym(fn->args), evallist(args, n));
 		else
 		{
@@ -116,7 +113,7 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 						printf("too many arguments\n");
 		}
 	
-	return eval(fn->body, x);
+	return begin(fn->body, n);
 }
 
 /**

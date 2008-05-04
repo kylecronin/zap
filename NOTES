@@ -4,3 +4,27 @@ TODO increase reader robustness (newline)
 TODO add support for rationals, floating point, and bigint
 TODO add support for continuations
 TODO add support for macros (common lisp style)
+TODO add garbage collection
+
+OK, I'm going to work on multi-line evals. I'm going to just use the evallist
+function and return the last value. Alternatively, I could just use begin
+and hardcode it into the few functions that need to eval multiple expressions.
+What expressions are those? define, lambda, let[*|rec] ... Actually, that
+might be it.
+
+
+
+
+An analysis of the shortcuts taken so far:
+
+If this is to evolve into an efficient interpreter, I will need to know which
+portions I've cut corners on and attempt to make them more efficient.
+
+Perhaps the most glaring aspect is the fact that every time an object is allocated, malloc() is called. In addition to this, you won't find a call to
+free() anywhere. Programs that rely on the efficiency of the garbage collector
+have already lost the efficiency battle, but we can still make sure that
+memory usage remains reasonable.
+
+In order to create a new object, that object has to come from somewhere. There
+are two options in this regard: obtain memory from the OS every time, or keep
+a pool of objects that can be used.
