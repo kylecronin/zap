@@ -1,3 +1,117 @@
+Now that I've had a disk crash, I have the opportunity to rethink the entire
+architecture of this program.
+
+First, though, I want to understand continuations.
+
+OK, so the continuation represents the future of the computation. However,
+there are examples that clearly show that a continuation also holds some state
+as well.
+
+OK, I just got it. This is the example I've been mulling over:
+
+(define mondo-bizarro
+  (let ((k (call/cc (λ (c) c))))
+    (write 1)
+    (call/cc (λ (c) (k c)))
+    (write 2)
+    (call/cc (λ (c) (k c)))
+    (write 3)))
+
+We can conceptualize each of these continuations individually, but it makes
+much more sense when we realize that the continuation captured by every single
+call/cc (except the initial one) is really capturing the same thread of
+computation at different points.
+
+k <- callcc(c -> c)
+
+OK, k is now, for lack of a better term, itself. Call k with anything and you
+get a new thread of computation where k is bound to that value.
+
+All right:
+
+write(1)
+
+Writes "1" on the screen, no biggie.
+
+callcc(c -> k(c))
+
+What this does is it takes the current continuation and calls k with it. So
+now what's happened is that we've entered a new thread of computation where
+k is the "main" continuation.
+
+write(1)
+
+Same as before
+
+callcc(c -> k(c))
+
+OK, here what we've done is we're switching back to the main thread of
+computation, because we're calling k with c
+
+This is a critical point - NOTHING IS DONE WITH THE CURRENT CONTINUATION
+Once we switch back to the main thread, that "alternate reality" doesn't
+exist.
+
+write(2)
+
+Straightforward
+
+callcc(c -> k(c))
+
+This is, largely, the same as before - we enter another reality, print 1, and
+reenter this reality.
+
+write(3)
+
+Yeah
+
+And we're done
+
+
+
+
+OK, so now that we've had a fresh dose of reality, what is required to
+implement this behavior?
+
+First, let's identify what we needed to keep track of. What this example
+dramatically shows is a value having different results in different
+continuations. Since the ccc happens within the let, this doesn't appear to be
+an exception to the concept that the continuation represents the future of a
+computation - the let binding happens automatically and doesn't need to be
+checked within the continuation itself.
+
+So what exactly is the future of the computation? It's the recursive call
+you're stuck under and your position in a body of expressions (such as begin
+or let), but I suspect that given a prudent implementation of begin and let
+these two are really one and the same.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 TODO create scheme init file, move all possible functions there
 TODO increase reader robustness (newline)
 TODO add support for rationals, floating point, and bigint
