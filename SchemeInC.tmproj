@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>documents</key>
+	<array>
+		<dict>
+			<key>filename</key>
+			<string>axioms.c</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>NOTES</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>operators.c</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>README</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>scheme.c</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>test.c</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>test.scm</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>types.c</string>
+		</dict>
+	</array>
+	<key>fileHierarchyDrawerWidth</key>
+	<integer>200</integer>
+	<key>metaData</key>
+	<dict/>
+	<key>showFileHierarchyDrawer</key>
+	<true/>
+	<key>windowFrame</key>
+	<string>{{325, 122}, {786, 726}}</string>
+</dict>
+</plist>
