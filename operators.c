@@ -75,6 +75,11 @@ atom* apply (afun*, acons*, nspace*);
 atom* eval (atom*, nspace*);
 atom* evallist (acons*, nspace*);
 
+atom *icont(acont *c, atom *ret) {
+	printf("cont invoked\n");
+	c->ret = ret;
+	longjmp(c->c, 0);
+}
 
 atom *apply (afun *fn, acons *args, nspace *n) {
 	
@@ -118,13 +123,13 @@ atom *eval (atom *expr, nspace *n) {
 	if (!expr) return expr;
 	
 	
-/*	printf("eval [");
+	printf("eval [");
 	print(expr);
 	printf("]");
-	printf(" in [");
+/*	printf(" in [");
 	printns(n);
-	printf("]"); 
-	printf("\n");*/
+	printf("]"); */ 
+	printf("\n");
 	
 	
 	acons *c;
@@ -145,6 +150,8 @@ atom *eval (atom *expr, nspace *n) {
 					return apply((afun *) o, ccons(c->cdr), n);
 				case tax:
 					return (cax(o)->a)(ccons(c->cdr), n);
+				case tcont:
+					return icont((acont *) o, eval(c->cdr, n));
 				
 				
 			}

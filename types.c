@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <setjmp.h>
 
 #define catom(x) ((atom *) x)
 
@@ -9,7 +10,7 @@
 
 
 typedef enum {
-	tcons, tint, tchar, tfun, tstring, tsym, tbool, tax, tmac
+	tcons, tint, tchar, tfun, tstring, tsym, tbool, tax, tmac, tcont
 } atom;
 
 atom* readlist (char**);
@@ -24,7 +25,17 @@ atom *newbool(int val) {
 	return val ? t : f;
 }
 
+typedef struct acont {
+	jmp_buf c;
+	int s;
+	atom *ret;
+} acont;
 
+acont *newcont() {
+	acont *ret = malloc(sizeof(acont));
+	ret->s = 0;
+	return ret;
+}
 
 
 typedef struct acons {

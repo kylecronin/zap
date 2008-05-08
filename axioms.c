@@ -410,7 +410,35 @@ atom *sprint(acons *args, nspace *n) {
 	return NULL;
 }
 
-
+atom *callcc(acons *args, nspace *n) {
+	if (lengthhelp(args) != 1) {
+		printf("call/cc: expected 1 argument\n");
+		return NULL;
+	}
+	
+	atom *arg = eval(args->car, n);
+	
+	if (*arg != tfun) {
+		printf("call/cc: argument must be a function\n");
+		return NULL;
+	}
+	
+	acont *c = newcont();
+	setjmp(c->c);
+	printf("we jumped\n");
+	
+	if (c->s)
+	{
+		printf("returning from slumber\n");
+		return c->ret;
+	}
+	else
+	{
+		c->s = 1;
+		printf("initial return\n");
+		return apply(cfun(arg), ccons(newcons(catom(c), NULL)), n);
+	}
+}
 
 
 

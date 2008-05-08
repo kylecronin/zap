@@ -85,8 +85,160 @@ you're stuck under and your position in a body of expressions (such as begin
 or let), but I suspect that given a prudent implementation of begin and let
 these two are really one and the same.
 
+What if, on the way down a recursive call, we create the necessary
+continuations? This is probably the only way to actually do this. Instead of
+"returning" a value from a function, we just call the current continuation
+with our result.
 
+Example:
+
+(define x 2)
+(define y 3)
+(+ x y)
+
+This brings up a good point - at what point can we safely ignore the c? Atomic
+level operations will have to be provided with the cc, but as they are atomic
+they should be able to resolve their values without needing the cc. In fact,
+the atomic operations are really the ones doing the heavy c lifting.
+
+atom *cons(acons *args, nspace *n, cont *c) {
+
+	So the idea is that cons evaluates its two arguments
+	and returns a cons cell with them inside. What this means
+	is that the call to eval must be accompanied by the cc, here
+	*c, which indicates that it is in the middle of a cons
+	operation.
+	
+	What seems inevitable is that each atomic operation must
+	also have continuation-compatible counterparts. As in, this
+	operation, cons, also has perhaps cons-car and cons-cdr, each
+	taking 1 argument.
+	
+	
+	
+	Another option, perhaps, is to just fake all of this. We could
+	just keep a tether to the toplevel populated by data structures
+	that contain all the calling information. This way, if the
+	continuation is "invoked" the entire tree can be recalculated.
+	This is not a good idea and won't work.
+	
+	
+	The continuation has to be a function only in the sense that it
+	has to be invokable (with 1 argument).
+	
+}
+
+invoke(cont *c, atom *val) {
+
+	ok, so we're invoking a continuation, what does it return? 
+
+
+}
+
+
+Perhaps attempting to meld continuations into my existing infrastructure won't
+work.
+
+I think the only option I really have is to implement all of my functions in
+the aforementioned continuation-friendly style.__
  
+
+This is quite frustrating - I know what a continuation is, I just don't know
+the best way to implement it!
+
+A continuation represents the future of the computation.
+
+A continuation, when invoked, always replaces the current continuation. This
+means that it happens at the toplevel.
+
+(+ 2 (* 3 (fact 4)))
+          ^
+
+at (fact 4) the continuation is (lambda (x) (+ 2 (* 3 x)))
+
+yes, yes
+
+this might work - just use the existing S-expressions?
+
+Maybe I should focus on capturing the continuation now, and on using it later.
+Or maybe not. This provides us with the context, but it does nothing for
+modifying the recursive stack used.
+
+Well I looked at the Wikipedia article for CPS and it seems that my concerns
+are more or less justified. Continuations are hard to do right. Should my
+lisp not include them? I'm not ready to make that sacrifice just yet.
+
+OK, of all the ideas I've had so far, I like going ahead and modifying the
+axioms to generate continuations. I probably should add some basic creation
+functions for them as well.
+
+
+It's actually not too bad to recursively create functions that illustrate the
+current stack.
+
+Order of parameter evaluation is deliberately unspecified in Scheme - there
+should be no continuations that rely on it.
+
+
+
+atom *cons(acons *args, nspace *n, cont *c) {
+
+	atom	*car = eval(args->car, n),
+			*cdr = eval(args->cdr, n);
+
+	return c(newcons(car, cdr));
+	
+}
+
+atom *cons-car(atom *car, nspace *n, cont *c) {
+
+	atom *cdr = eval(args->cdr, n, c, etc);
+	
+	return c(newcons(car, cdr));
+
+}
+
+atom *cons-cdr(atom *cdr, nspace *n, cont *c) {
+
+
+
+}
+
+The relationship between eval and continuations
+
+Without a call to eval, there is no recursive evaluation, and thus no
+continuation. I suspect that this relationship is meaningful.
+
+Here's what I worry about:
+
+
+
+Scratch all that above - it seems that C is kind enough to provide some
+functions setjmp and longjmp that enable us to save the runtime stack and
+jump back into it when we want to. This is the basic behavior of the
+continuation. One thing that I will have to consider is the return value of
+this.
+
+call/cc -> setjmp
+[invoking cc] -> longjmp
+
+call/cc:
+- set var 0
+- setjmp
+- check cc->var
+	- if 0, proceed
+	- if 1, we're really in a longjmp
+- set cc->var 1
+- return eval of provided fun with the cc
+
+[invoke]
+- get & eval arg to be returned
+- put in cc->arg
+- longjmp
+- check cc->var
+	- if 0, we're really in call/cc
+	- if 1, proceed
+- 
 
 
 
