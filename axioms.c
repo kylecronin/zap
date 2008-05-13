@@ -440,7 +440,11 @@ atom *callcc(acons *args, nspace *n) {
 	}
 }
 
-
+atom *le(acons *args, nspace *n) {
+	aint *a = cint(eval(args->car, n));
+	aint *b = cint(eval(ccons(args->cdr)->car, n));
+	return newbool(a->i <= b->i);
+}
 
 
 

@@ -123,13 +123,13 @@ atom *eval (atom *expr, nspace *n) {
 	if (!expr) return expr;
 	
 	
-	printf("eval [");
+/*	printf("eval [");
 	print(expr);
 	printf("]");
 /*	printf(" in [");
 	printns(n);
-	printf("]"); */ 
-	printf("\n");
+	printf("]");  
+	printf("\n");*/
 	
 	
 	acons *c;

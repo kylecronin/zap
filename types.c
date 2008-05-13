@@ -5,6 +5,25 @@
 
 #define catom(x) ((atom *) x)
 
+char *mem;
+int left = 0;
+
+void *mymalloc(int size) {
+	if (left < size)
+	{
+		printf("malloc\n");
+		mem = malloc(10000000);
+		left = 10000000;
+	}
+	left -= size;
+	mem += size;
+	return mem - size;
+}
+
+
+
+
+
 
 
 
@@ -32,7 +51,7 @@ typedef struct acont {
 } acont;
 
 acont *newcont() {
-	acont *ret = malloc(sizeof(acont));
+	acont *ret = mymalloc(sizeof(acont));
 	ret->s = 0;
 	return ret;
 }
@@ -43,7 +62,7 @@ typedef struct acons {
 } acons;
 
 atom *newcons(atom *car, atom *cdr) {
-	acons *ret = malloc(sizeof(acons));
+	acons *ret = mymalloc(sizeof(acons));
 	ret->t = tcons;
 	ret->car = car;
 	ret->cdr = cdr;
@@ -69,7 +88,7 @@ typedef struct aint {
 } aint;
 
 atom *newint(int i) {
-	aint *ret = malloc(sizeof(aint));
+	aint *ret = mymalloc(sizeof(aint));
 	ret->t = tint;
 	ret->i = i;
 	return (atom *) ret;
@@ -89,7 +108,7 @@ typedef struct achar {
 } achar;
 
 atom *newchar(char c) {
-	achar *ret = malloc(sizeof(achar));
+	achar *ret = mymalloc(sizeof(achar));
 	ret->t = tchar;
 	ret->c = c;
 	return (atom *) ret;
@@ -109,8 +128,8 @@ typedef struct astring {
 } astring;
 
 atom *newstring(char *s) {
-	char *str = malloc(strlen(s));
-	astring *ret = malloc(sizeof(astring));
+	char *str = mymalloc(strlen(s));
+	astring *ret = mymalloc(sizeof(astring));
 	ret->t = tstring;
 	ret->s = strcpy(str, s);
 	return (atom *) ret;
@@ -130,8 +149,8 @@ typedef struct asym {
 } asym;
 
 atom *newsym(char *s) {
-	char *str = malloc(strlen(s));
-	astring *ret = malloc(sizeof(asym));
+	char *str = mymalloc(strlen(s));
+	astring *ret = mymalloc(sizeof(asym));
 	ret->t = tsym;
 	ret->s = strcpy(str, s);
 	return (atom *) ret;
@@ -152,7 +171,7 @@ typedef struct nspace {
 } nspace;
  
 nspace *define(nspace *head, asym *name, atom *link) {
-	nspace *ret = malloc(sizeof(nspace));
+	nspace *ret = mymalloc(sizeof(nspace));
 	ret->head = head;
 	ret->name = name;
 	ret->link = link;
@@ -165,7 +184,7 @@ typedef struct aax {
 } aax;
 
 atom *newax(atom *(*a)(acons*, nspace*)) {
-	aax *ret = malloc(sizeof(aax));
+	aax *ret = mymalloc(sizeof(aax));
 	ret->t = tax;
 	ret->a = a;
 	return (atom *) ret;
@@ -188,7 +207,7 @@ typedef struct afun {
 } afun;
 
 atom *newfun(atom *args, acons *body, nspace *n) {
-	afun *ret = malloc(sizeof(afun));
+	afun *ret = mymalloc(sizeof(afun));
 	ret->t = tfun;
 	ret->args = args;
 	ret->body = body;
