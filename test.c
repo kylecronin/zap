@@ -1,19 +1,17 @@
 #include <stdio.h>
 
-#define so(thing) printf(#thing ": %i\n", sizeof(thing))
-
 main()
 {
-	so(char);
-	so(int);
-	so(float);
-	so(double);
-	so(short);
-	so(long);
-	so(long long);
-	so();
-	
-	
+
+	if (0)
+		if (0)
+			printf("1\n");
+		else;
+	else switch (3) {
+		case 3: printf("test\n"); break;
+		
+		
+	}
 	
 	
 }

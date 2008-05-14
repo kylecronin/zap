@@ -1,3 +1,50 @@
+OK, so I'm back on Valencia - albeit with a complete disk wipe. I'd been
+thinking about various continuation implementation strategies before, but
+after reading K&R I've decided to go for some revamps of non-continuation
+related areas of this program. Specifically, making the reader more robust.
+K&R introduced some functions for reading in strings that could prove more
+useful and robust.
+
+Specifically, of course, I'm talking about the scanf function. It already
+ignores whitespace, and it might be able to be used to get the tokens from
+the string.
+
+Here is a basic outline for a more "robust" reader function:
+
+- read a line
+- check () balance (and "" balance)
+	- if too many (, read another line
+	- if too many ), error out
+- flatten whitespace (perhaps insert \0)
+- flatten comments (from ; to \n)
+- convert case (toupper/tolower)
+- begin recursive parse
+
+legit input to the parser will be of the form
+
+<token> 		:= '()' | '(' <token-list> ')'
+<token-list> 	:= <token> | <token> ' ' <token-list>
+
+in other words, spaces only appear where necessary. is this the best approach?
+I mentioned an idea - inserting \0 to delimit tokens - this would include
+the ( and ). This would probably be the best bet, actually
+
+- parsing will be able to be guaranteed a "legit" input
+- parsing will no longer rely on manipulating the char**, instead a
+  global variable will be used. 
+
+
+
+
+
+
+
+
+
+
+
+
+
 Now that I've had a disk crash, I have the opportunity to rethink the entire
 architecture of this program.
 
