@@ -33,6 +33,8 @@ the ( and ). This would probably be the best bet, actually
 - parsing will no longer rely on manipulating the char**, instead a
   global variable will be used. 
 
+(define (square x) (* x x))
+
 
 
 

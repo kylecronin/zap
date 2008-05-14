@@ -20,14 +20,24 @@ static char *p;
 - convert case (toupper/tolower)
 - begin recursive parse
 
+
+OK, this will be a bit tricky. Here is how to more precisely naviagate the
+string in a single pass:
+
+- read the line
+- move past ws
+- begin loop: while (paren)
+	- additonal parens affect paren
+	- ...
+- paren is 0, str is 0
+
 I would like to do everything in a single pass. In order to compensate for
 various whitespace, 
 */
 
 atom *read (FILE *input) {
 	static char buffer[BUFFSIZE], *store;
-	char obuff[128], *obp = obuff;
-	char *rp, *wp; /* read pointer, write pointer */
+	char tb[BUFFSIZE], *rp, *wp;
 	int paren, str, offset, cmnt;
 	
 	if (store) {
@@ -38,16 +48,17 @@ atom *read (FILE *input) {
 	paren = str = cmnt = 0;
 	for (rp = wp = buffer; *rp; rp++, wp++) {
 		if (str)
-			if (*t == '"')
+			if (*rp == '"')
 				str = 0;
 			else;
-		else switch (*t) {
+		else switch (*rp) {
 			case '"':
 				str = 1;
 				break;
 			case '(':
-				if (offset <= 0) {
-					*(++obuff) = *t;
+				paren++;
+				if (rp < wp) {
+					*(obuff++) = *rp;
 					
 					
 				}
@@ -57,11 +68,10 @@ atom *read (FILE *input) {
 			
 		}
 		
-		
-		
-			
-		
-		
+		if (rp < wp)
+			*wp = *(obuff--);
+		else
+			*wp = *rp;
 	}
 	
 	
