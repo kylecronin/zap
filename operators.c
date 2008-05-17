@@ -64,6 +64,15 @@ int eq(atom *a, atom *b) {
 }*/
 
 atom *lookup(nspace *search, asym *name) {
+	while (search) {
+		if (name->id == search->name->id)
+			return search->link;
+		search = search->head;
+	}
+	
+	return NULL;
+	
+	
 	if (!search) return NULL;
 	if (eq(catom(name), catom(search->name)))
 		return search->link;

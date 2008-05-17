@@ -124,22 +124,35 @@ astring *cstring(atom *x) {
 typedef struct asym {
 	atom t;
 	char *s;
+	int id;
 } asym;
 
 atom *newsym(char *s) {
+	static char *lt[256];
+	
+	char **t = lt;
+	while (*t && strcmp(*t, s))
+		t++;
+		
+	//printf("sym %s = %i\n", s, t - lt);
+		
 	char *str = malloc(strlen(s));
-	astring *ret = malloc(sizeof(asym));
+	asym *ret = malloc(sizeof(asym));
 	ret->t = tsym;
 	ret->s = strcpy(str, s);
+	ret->id = t - lt;
+	*t = ret->s;
 	return (atom *) ret;
 }
 
-asym *csym(atom *x) {
+/*asym *csym(atom *x) {
 	if (x && *x == tsym)
 		return (asym *) x;
 	printf("bad sym cast\n");
 	return NULL;
-}
+}*/
+
+#define csym(x) ((asym *) (x))
 
 
 typedef struct nspace {
@@ -304,6 +317,8 @@ int eq(atom *a, atom *b) {
 		case tchar:
 			return cchar(a)->c == cchar(b)->c;
 		case tsym:
+			//printf("eq %s and %s\n", csym(a)->s, csym(b)->s);
+			return csym(a)->id == csym(b)->id;
 			return !strcmp(csym(a)->s, csym(b)->s);
 		default:
 			return a == b;
