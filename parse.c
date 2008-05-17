@@ -111,12 +111,3 @@ static atom *parse (char *p) {
 				return newsym(p);
 	}
 }
-/*
-int main (void) {
-	printf("> ");
-	atom *val = read(stdin);
-	print(val);
-	printf("\n");
-	
-	return 0;
-}*/

@@ -1,3 +1,20 @@
+Yikes -- apparently someone is watching this on GitHub. I don't really know
+what that means. Hopefully there's nothing too embarassing in here, but it is
+a rather open journal of my random thoughts. It appears that he also started
+watching two other scheme projects, which indicates that I'm not singled out.
+
+I do like the new reader that I wrote (it's spun off into parse.c) and it
+seems fairly robust for my purposes. The only improvements I can see are
+adding support for more types (which is a must) and potentially allowing
+extension of the reader from inside scheme, like the read macros of CL - but I
+think that's a long way off.
+
+Now, back to continuations...
+
+
+
+
+
 OK, so I'm back on Valencia - albeit with a complete disk wipe. I'd been
 thinking about various continuation implementation strategies before, but
 after reading K&R I've decided to go for some revamps of non-continuation
