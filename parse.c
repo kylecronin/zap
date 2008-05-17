@@ -1,151 +1,122 @@
 #include <stdio.h>
 #include "types.c"
 
-#define BUFFSIZE 16384
+#define BUFFSIZE 256
 
 atom *read (FILE*);
+static char readchar (void);
+static void putback (char c);
 static char *next (void);
-static atom *parse (void);
+static atom *parse (char*);
 static atom *parselist (void);
 
-static char *p;
-
-/*
-- read a line
-- check () balance (and "" balance)
-	- if too many (, read another line
-	- if too many ), error out
-- flatten whitespace (perhaps insert \0)
-- flatten comments (from ; to \n)
-- convert case (toupper/tolower)
-- begin recursive parse
-
-
-OK, this will be a bit tricky. Here is how to more precisely naviagate the
-string in a single pass:
-
-- read the line
-- move past ws
-- begin loop: while (paren)
-	- additonal parens affect paren
-	- ...
-- paren is 0, str is 0
-
-I would like to do everything in a single pass. In order to compensate for
-various whitespace, 
-*/
+FILE *i;
 
 atom *read (FILE *input) {
-	static char buffer[BUFFSIZE], *store;
-	char tb[BUFFSIZE], *rp, *wp;
-	int paren, str, offset, cmnt;
-	
-	if (store) {
-		fgets(buffer, BUFFSIZE, input);
-		store = buffer;
-	}
-	
-	paren = str = cmnt = 0;
-	for (rp = wp = buffer; *rp; rp++, wp++) {
-		if (str)
-			if (*rp == '"')
-				str = 0;
-			else;
-		else switch (*rp) {
-			case '"':
-				str = 1;
-				break;
-			case '(':
-				paren++;
-				if (rp < wp) {
-					*(obuff++) = *rp;
-					
-					
-				}
-				
-			
-			
-			
-		}
-		
-		if (rp < wp)
-			*wp = *(obuff--);
-		else
-			*wp = *rp;
-	}
-	
-	
-	
+	i = input;
+	return parse(next());
 }
 
+static char readchar (void) {
+	int c = getc(i);
+	if (c != EOF)
+		return c;
+	printf("read error: unexpected EOF (check parens)\n");
+	exit(1);
+}
 
+static void putback (char c) {
+	ungetc(c, i);
+}
 
-
-/* moves p to the next item, returns the old value for p */
 static char *next (void) {
-	char *ret = p;
-	while (p++);
-	return ret;
+	static char buff[BUFFSIZE];
+	char *c = buff;
+	while (isspace(*c = readchar()));
+	
+	if (*c != ')' && *c != '(' && *c != '"') {
+		while( !isspace(*(c+1) = readchar()) && *(c+1) != '(' && *(c+1) != ')')
+			c++;
+		putback(*(c+1));
+	}
+	
+	else if (*c == '"') {
+		while ( (*(++c) = readchar()) != '"' )
+			if (*c == '\\')
+				*(++c) = readchar();
+	}
+	
+	*(c+1) = '\0';
+
+	return buff;
 }
 
-/* parses a list */
+
 static atom *parselist (void) {
+	char *p = next();	
 	atom *ret, *car, *cdr;
 	
-	switch (*next()) {
+	switch (*p) {
 		case ')':
 			return NULL;
 		case '.':
-			ret = rparse();
-			if (*p == ')')
-				next();
+			ret = parse(next());
+			if (*next() == ')')
+				return ret;
 			else
 				printf("invalid dotted list\n");
-			return ret;
+				exit(1);
 			break;
 		default:
-			car = rparse();
+			car = parse(p);
 			cdr = parselist();
 			return newcons(car, cdr);
 	}
 }
 
-static atom *rparse (void) {
-	char *t;
+static atom *parse (char *p) {
+	char *t = p;
 	
 	if (!*p)
 		return NULL; /* we've reached the end */
 	
 	switch (*p) {
 		case '(':
-			return next(), parselist();
+			return parselist();
 		case '"':
-			t = next() + 1;
-			*(p-2) = '\0';
-			return newstring(t);
+			while (*(++t));
+			*(t-1) = '\0';
+			return newstring(p+1);
 		case '#':
 			switch (*(p+1)) {
 				case '\\':
-					return t = next(), newchar(*(t+2));
+					return newchar(*(p+2));
 				case 't':
-					return next(), newbool(1);
+					return newbool(1);
 				case 'f':
-					return next(), newbool(0);
+					return newbool(0);
 				default:
 					printf("invalid # syntax\n");
+					exit(1);
 			}
 			break;
 		case '\'':
-			return next(), newcons(newsym("quote"), newcons(rparse(), NULL));
+			return newcons(newsym("quote"), newcons(parse(p+1), NULL));
+		case ')':
+			
 		default:
 			if (isdigit(*p))
-				return t = next(), newint(atoi(t));
+				return newint(atoi(p));
 			else
-				return t = next(), newsym(t);
+				return newsym(p);
 	}
 }
-
-
-
-
-main () {}
+/*
+int main (void) {
+	printf("> ");
+	atom *val = read(stdin);
+	print(val);
+	printf("\n");
+	
+	return 0;
+}*/

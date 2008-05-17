@@ -44,7 +44,7 @@
 **/
 
 atom *begin(acons*, nspace*);
-
+/*
 int eq(atom *a, atom *b) {
 	if (!a || !b)
 		return !a && !b;
@@ -61,7 +61,7 @@ int eq(atom *a, atom *b) {
 		default:
 			return a == b;
 	}
-}
+}*/
 
 atom *lookup(nspace *search, asym *name) {
 	if (!search) return NULL;

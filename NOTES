@@ -37,6 +37,170 @@ the ( and ). This would probably be the best bet, actually
 
 
 
+I had thought about doing a read, formatting the buffer, then doing a parse.
+It might be better to have parse call read as needed. This has the advantage
+that the buffer can be modified at will. However, the current parse relies on
+the ability to point to arbitrary objects returned from past read calls. So
+no, it would not be a good idea to merge these two into one.
+
+The read goes something like this:
+
+- we read in characters from the input buffer, then write them to the output
+  buffer
+- each time we go through the loop, we process one character of input - would
+  it be better to use something like getchar()? Perhaps so.
+- so we get the next character, perform some special formatting on the output
+  buffer, and write what we want in there
+- each loop pass will assume that the buffer is in a position to be written
+  directly to - no formatting will be needed to pad the output at the front
+- so we loop while... what?
+	- if we don't start with a paren, we're reading in an atom
+	- if we do start with a paren, we need to read until we reach its closing
+	  paren
+	- these can be generalized into one statement:
+	  (c = getchar()) != EOF && 
+	
+	looping continues while:
+	- we got a real char (exit with error if we don't)
+	- we are in parens OR we read a non-space OR we are in a string
+	
+	(c != EOF) && (parens || string || !isspace(c))
+	
+	
+	
+	int c = getchar();
+	
+	(c = getchar()) != EOF
+	
+	while ( (c = getchar()) != EOF && (parens || string || !isspace(c)) ) {
+		
+		
+	}
+	/* check for breaking condition */
+	if (c == EOF && (paren || string)) {
+		
+		/* error, we read to the end and we're still inside a
+		   paren/string */
+	}
+	else {
+		/* we assume we're simply done reading */
+		
+	
+	}
+
+
+OK, I need to slow down for a minute - what I need to do is figure out how
+to handle the spacing issue for the parenthesis. I want to be as generous
+as possible when it comes to spacing, so an expression like this:
+(+(* 2 3)4)
+should return 10. the lack of spaces around (* 2 3) should be acceptable.
+
+so this means that we have to have some interesting parsing rules when it
+comes to handling parens. first, a paren needs to be padded, but simply
+inserting "\0(\0" for ( is not possible.
+
+one thing that I did "standardize" on is that every pass through the loop
+the write pointer is pointing at a slot to write the next item (not null)
+
+I have also incorporated some "look ahead" into the algorithm already, and
+am largely convinced that this is how to implement the rest of this.
+
+- read next char into c
+- check if we're in a string
+	- if c is \, look ahead into c
+		- if EOF break
+		- else write both chars, continue
+	- else write char, continue
+- check if whitespace
+	- continue
+- check if char is ( or )
+	- write and pad right
+- check if char is "
+	- set string to !string
+	- write char
+- check next char
+	- if whitespace or ( or ), pad
+	
+	
+	
+OK, fuck it all, let's go back to a completely generative approach
+this will actually fit well with my parse algorithm - all I need to do is
+replace next with a suitable replacement. unfortunately, the current parse
+assumes that it can keep the old pointers while having next generate the new
+ones. what this means is that I'll have to either rewrite my parse to avoid
+this behavior (perhaps copying the string to local storage) or take care not
+to rewrite the old value
+
+so this is what we have to do
+we say [read/parse x]
+we read the first token from x and pass it to parse
+parse can, at its discretion, read more tokens from x
+
+
+so we have basically 3 functions:
+
+parse - parses the token, optionally getting more
+read  - reads the first token and passes it to parse
+next  - gets next token
+
+atom *read(FILE *input) [sets global FILE*]
+
+atom *parse() [uses global char*]
+
+void *next() [uses global FILE*, sets global char*]
+
+FILE *i;
+char *p;
+
+atom *read(FILE *input) {
+	i = input;
+	next();
+	return parse();
+}
+
+char readchar() {
+	int c = getc(i);
+	if (c != EOF)
+		return c;
+	printf("read error: unexpected EOF\n");
+	exit(1);
+}
+
+
+
+char *next() {
+	static char buff[BUFFSIZE];
+	char *c = buff;
+	while (isspace(*c = readchar()));
+	
+	if (c != ')' && c != '(')
+		while( !isspace(*(c+1) = readchar()) )
+			c++;
+	
+	else if (c == '"')
+		while ( (*(++c) = readchar()) != '"' )
+			if (*c == '\\')
+				*(++c) = readchar();
+	
+	*(c+1) = '\0';
+
+	return buff;
+}
+
+
+
+
+
+
+what this allows us to do is separate
+
+
+
+
+
+what we're going to do is have
+
+
 
 
 

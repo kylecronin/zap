@@ -3,14 +3,15 @@
 #include <string.h>
 #include <setjmp.h>
 
+
 #define catom(x) ((atom *) x)
 
 typedef enum {
 	tcons, tint, tchar, tfun, tstring, tsym, tbool, tax, tmac, tcont
 } atom;
 
-atom* readlist (char**);
-atom* read (char**);
+/* atom* readlist (char**);
+atom* read (char**); */
 void print (atom*);
 
 
@@ -201,9 +202,10 @@ afun *cfun(atom *x) {
 
 
 
-
+/*
 char **cw (char **p) { while (**p == ' ') (*p)++; return p; }
 char **ip (char **p) { (*p)++; return p; }
+
 
 atom *readlist (char **input) {
 	atom *ret, *car, *cdr;
@@ -228,6 +230,7 @@ atom *readlist (char **input) {
 	
 	return ret;
 }
+
 
 atom *read (char **input) {	
 	atom *ret;
@@ -285,6 +288,26 @@ atom *read (char **input) {
 	}
 	
 	return ret;
+}
+*/
+
+
+int eq(atom *a, atom *b) {
+	if (!a || !b)
+		return !a && !b;
+	if (*a != *b) return 0;
+	
+	switch (*a) {
+		
+		case tint:
+			return cint(a)->i == cint(b)->i;
+		case tchar:
+			return cchar(a)->c == cchar(b)->c;
+		case tsym:
+			return !strcmp(csym(a)->s, csym(b)->s);
+		default:
+			return a == b;
+	}
 }
 
 void printns (nspace *n) {

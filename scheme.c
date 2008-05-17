@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "types.c"
+//#include "types.c"
+#include "parse.c"
 #include "operators.c"
 #include "axioms.c"
 
@@ -55,9 +56,9 @@ int main (int argc, const char * argv[]) {
 	
 	for (;;) {
 		printf("> ");
-		gets(buff);
-		p = buff;
-		print(eval(read(&p), n));
+		//gets(buff);
+		//p = buff;
+		print(eval(read(stdin), n));
 		//print(read(&p));
 		printf("\n");
 	}

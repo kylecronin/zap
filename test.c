@@ -1,17 +1,12 @@
 #include <stdio.h>
+#include <string.h>
 
-main()
+int main (void)
 {
-
-	if (0)
-		if (0)
-			printf("1\n");
-		else;
-	else switch (3) {
-		case 3: printf("test\n"); break;
-		
-		
-	}
+	char x[] = " hello      ";
+	char *p = x;
 	
+	strncpy(x, x+1, 5);
 	
+	printf(x);
 }
