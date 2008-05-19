@@ -1,11 +1,3 @@
-/*123*/
-/*asdf*/
-/* yet again */
-/*a;sklf*/
-/** asdf */
-/*lala*/
-/* rrradded test again hello */
-/* asdfit's me again */
 atom *begin(acons *args, nspace *n) {
 	if (args)
 	{
