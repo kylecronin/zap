@@ -1,4 +1,4 @@
-/* added */
+/* added test */
 atom *begin(acons *args, nspace *n) {
 	if (args)
 	{
