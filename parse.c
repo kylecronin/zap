@@ -101,7 +101,19 @@ static atom *parse (char *p) {
 			}
 			break;
 		case '\'':
-			return newcons(newsym("quote"), newcons(parse(p+1), NULL));
+			return newcons(newsym("quote"), newcons(
+				*(p+1) ? parse(p+1) : parse(next())
+				, NULL));
+		case '`':
+			return newcons(newsym("quasiquote"), newcons(
+				*(p+1) ? parse(p+1) : parse(next())
+				, NULL));
+		case ',':
+			return newcons(newsym("unquote"), newcons(
+				*(p+1) ? parse(p+1) : parse(next())
+				, NULL));		
+				
+				
 		case ')':
 			
 		default:

@@ -74,6 +74,34 @@ atom *quote(acons *args, nspace *n) {
 	return args->car;
 }
 
+atom *quasiquote(acons *args, nspace *n) {
+	printf("qq: ");
+	print(catom(args));
+	printf("\n");
+	
+	if (!args)
+		return NULL;
+	
+	if (*(args->car) != tcons) {
+		printf("nonlist\n");
+		return args->car;
+	}
+
+	args = ccons(args->car);
+	
+	if (eq(args->car, newsym("unquote")))
+		return eval(ccons(args->cdr)->car, n);
+	
+	return newcons(quasiquote(ccons(newcons(args->car, NULL)), n),
+		quasiquote(ccons(args->cdr), n));
+		
+		
+		
+
+	
+	//return args->car;
+}
+
 atom *car(acons *args, nspace *n) {
 	atom *t = eval(args->car, n);
 	if (*t == tcons)

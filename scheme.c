@@ -53,6 +53,7 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("defmacro")), newax(defmacro));
 	n = define(n, csym(newsym("call/cc")), newax(callcc));
 	n = define(n, csym(newsym("<=")), newax(le));
+	n = define(n, csym(newsym("quasiquote")), newax(quasiquote));
 	
 	for (;;) {
 		printf("> ");
