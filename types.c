@@ -360,6 +360,9 @@ void print (atom *x) {
 				printns(cfun(x)->n);
 				printf("]");
 				break;
+			case tax:
+				printf("#axiom#");
+				break;
 		}
 	}
 }

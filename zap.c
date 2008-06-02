@@ -32,7 +32,7 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("exit")), newax(quit));
 	n = define(n, csym(newsym("lambda")), newax(lambda));
 	n = define(n, csym(newsym("define")), newax(def));
-	n = define(n, csym(newsym("length")), newax(length));
+//	n = define(n, csym(newsym("length")), newax(length));
 	n = define(n, csym(newsym("quote")), newax(quote));
 	n = define(n, csym(newsym("list?")), newax(listp));
 	n = define(n, csym(newsym("car")), newax(car));
@@ -52,8 +52,15 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("print")), newax(sprint));
 	n = define(n, csym(newsym("defmacro")), newax(defmacro));
 	n = define(n, csym(newsym("call/cc")), newax(callcc));
-	n = define(n, csym(newsym("<=")), newax(le));
+	n = define(n, csym(newsym("<")), newax(lt));
 	n = define(n, csym(newsym("quasiquote")), newax(quasiquote));
+	n = define(n, csym(newsym("load")), newax(load));
+	n = define(n, csym(newsym("not")), newax(not));
+	n = define(n, csym(newsym("and")), newax(and));
+	
+	printf("zap -- western flyer\n");
+	
+	loadfile("bootstrap.scm", n);
 	
 	for (;;) {
 		printf("> ");

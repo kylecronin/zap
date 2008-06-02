@@ -402,6 +402,15 @@ atom *or(acons *args, nspace *n) {
 	return val;
 }
 
+atom *and(acons *args, nspace *n) {
+	if (!args)
+		return t;
+	atom *val = eval(args->car, n);
+	if (val == t)
+		return and(ccons(args->cdr), n);
+	return val;
+}
+
 
 
 int equalhelp(atom *a, atom *b) {
@@ -468,12 +477,27 @@ atom *callcc(acons *args, nspace *n) {
 	}
 }
 
-atom *le(acons *args, nspace *n) {
+atom *lt(acons *args, nspace *n) {
 	aint *a = cint(eval(args->car, n));
 	aint *b = cint(eval(ccons(args->cdr)->car, n));
-	return newbool(a->i <= b->i);
+	return newbool(a->i < b->i);
 }
 
+atom *not(acons *args, nspace *n) {
+	atom *thing = eval(args->car, n);
+	return newbool(thing == f);
+	
+}
+
+
+atom *load(acons *args, nspace *n) {
+	
+	astring *name = cstring(args->car);
+	
+	loadfile(name->s, n);
+	
+	return NULL;
+}
 
 
 
