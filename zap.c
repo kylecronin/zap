@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+char *bos;
+
 //#include "types.c"
 #include "parse.c"
 #include "operators.c"
@@ -18,6 +20,10 @@
 
 
 int main (int argc, const char * argv[]) {
+	char bosv;
+	bos = &bosv;
+	printf("bos: %i\n", bos);
+	
 	char buff[8192];
 	char *p;
 	nspace *n = NULL;

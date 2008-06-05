@@ -40,3 +40,16 @@
 						(if (< x 2) x
 						(+ (mfib (- x 1)) (mfib (- x 2)))))
 					equal?))
+
+(define def define)
+
+(define testc 
+	(begin
+		(load "test.scm")
+		cube))
+		
+(define (reload) (load "bootstrap.scm"))
+
+(define t 'temp)
+
+(define (go) (+ 1 (call/cc (lambda (c) (set! t c) 1))))

@@ -23,13 +23,17 @@ atom *newbool(int val) {
 }
 
 typedef struct acont {
+	atom t;
 	jmp_buf c;
 	int s;
 	atom *ret;
+	char *stack;
+	int size;
 } acont;
 
 acont *newcont() {
 	acont *ret = malloc(sizeof(acont));
+	ret->t = tcont;
 	ret->s = 0;
 	return ret;
 }
@@ -73,6 +77,7 @@ atom *newint(int i) {
 }
 
 aint *cint(atom *x) {
+	//printf("cint FTW!\n");
 	if (x && *x == tint)
 		return (aint *) x;
 	printf("bad int cast\n");
@@ -202,96 +207,6 @@ afun *cfun(atom *x) {
 
 
 
-/*
-char **cw (char **p) { while (**p == ' ') (*p)++; return p; }
-char **ip (char **p) { (*p)++; return p; }
-
-
-atom *readlist (char **input) {
-	atom *ret, *car, *cdr;
-	
-	switch (**cw(input)) {
-		case ')':
-			ret = NULL;
-			ip(input);
-			break;
-		case '.':
-			ret = read(ip(input));
-			if (**cw(input) == ')')
-				ip(input);
-			else
-				printf("invalid dotted list\n");
-			break;
-		default:
-			car = read(input);
-			cdr = readlist(input);
-			return newcons(car, cdr);
-	}
-	
-	return ret;
-}
-
-
-atom *read (char **input) {	
-	atom *ret;
-	char *end, oldend;
-	
-	switch(**cw(input)) {
-		case '(':
-			return readlist(ip(input));
-		case '"':
-			end = *input + 1;
-			while (*end != '"')
-				end++;
-			*end = '\0';
-			ret = newstring(*input + 1);
-			*input = end + 1;
-			break;
-		case '#':
-			if (**ip(input) == '\\')
-				ret = newchar(**ip(input));
-			else
-			{
-				if (**input == 't')
-					ret = newbool(1);
-				else if (**input == 'f')
-					ret = newbool(0);
-				else
-					printf("invalid # syntax\n");
-			}
-				
-			ip(input);
-			break;
-		case '\'':
-			ret = newcons(newsym("quote"), newcons(read(ip(input)), NULL));
-			break;
-		default:
-			if (**input >= 48 && **input <=57)
-			{
-				ret = newint(atoi(*input));
-				while (**input >= 48 && **input <= 57)
-					ip(input);
-			}
-			else
-			{
-				end = *input + 1;
-				while (*end && *end != ' ' && *end != '(' && *end !=')')
-					end++;
-				oldend = *end;
-				*end = '\0';
-				ret = newsym(*input);
-				*end = oldend;
-				*input = end;
-			}
-			break;
-			
-	}
-	
-	return ret;
-}
-*/
-
-
 int eq(atom *a, atom *b) {
 	if (!a || !b)
 		return !a && !b;
@@ -362,6 +277,9 @@ void print (atom *x) {
 				break;
 			case tax:
 				printf("#axiom#");
+				break;
+			case tcont:
+				printf("#cont#");
 				break;
 		}
 	}

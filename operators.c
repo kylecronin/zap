@@ -12,10 +12,22 @@ atom* apply (afun*, acons*, nspace*);
 atom* eval (atom*, nspace*);
 atom* evallist (acons*, nspace*);
 
+acont perm;
+
 atom *icont(acont *c, atom *ret) {
-	printf("cont invoked\n");
-	c->ret = ret;
-	longjmp(c->c, 0);
+	perm = *c;
+//	printf("cont called\n");
+	perm.ret = ret;
+//	printf("ret: ");
+//	print(ret);
+//	printf("\n");
+//	printf("jmp_buf: %i\n", perm.c);
+//	printf("copying from (%i, %i) to (%i, %i)\n", c->stack, c->stack + c->size, bos-(c->size), bos);
+	memcpy(bos-perm.size, perm.stack, perm.size);
+//	printf("jumping back\n");
+//	printf("jmp_buf: %i\n", perm.c);
+	longjmp(perm.c, 0);
+//	printf("shouldn't get here\n");
 }
 
 atom *apply (afun *fn, acons *args, nspace *n) {
@@ -60,13 +72,11 @@ atom *eval (atom *expr, nspace *n) {
 	if (!expr) return expr;
 	
 	
-/*	printf("eval [");
+	printf("eval [");
 	print(expr);
 	printf("]");
-/*	printf(" in [");
-	printns(n);
-	printf("]");  
-	printf("\n"); */
+
+	printf("\n"); 
 	
 	
 	acons *c;
@@ -88,7 +98,7 @@ atom *eval (atom *expr, nspace *n) {
 				case tax:
 					return (cax(o)->a)(ccons(c->cdr), n);
 				case tcont:
-					return icont((acont *) o, eval(c->cdr, n));
+					return icont((acont *) o, eval(ccons(c->cdr)->car, n));
 				
 				
 			}

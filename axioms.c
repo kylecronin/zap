@@ -212,6 +212,8 @@ atom *add(acons *args, nspace *n) {
 		return newint(0);
 
 	aint *car = cint(eval(args->car, n));
+	printf("+: back\n");
+	printf("+: val is %i\n", car->i);
 	aint *cdr = cint(add(ccons(args->cdr), n));
 	
 	if (car && cdr)
@@ -447,11 +449,34 @@ atom *sprint(acons *args, nspace *n) {
 	return NULL;
 }
 
+/**
+
+	thinking time
+	
+	basics for call/cc:
+	- save stack
+	- save registers
+	
+
+
+
+**/
+
+char *cstack (char *bottom, char *top) {
+	printf("diff: %i\n", bottom-top);
+	char *stack = malloc(bottom-top);
+	memcpy(stack, bottom, top-bottom);
+	return stack;
+}
+
 atom *callcc(acons *args, nspace *n) {
+	acont *c = newcont();
+	char tos;
+	
 	if (lengthhelp(args) != 1) {
 		printf("call/cc: expected 1 argument\n");
 		return NULL;
-	}
+	}	
 	
 	atom *arg = eval(args->car, n);
 	
@@ -460,19 +485,26 @@ atom *callcc(acons *args, nspace *n) {
 		return NULL;
 	}
 	
-	acont *c = newcont();
-	setjmp(c->c);
-	printf("we jumped\n");
 	
-	if (c->s)
+	c->size = bos - &tos;
+	c->stack = malloc(c->size);
+	printf("copying from (%i, %i) to (%i, %i)\n", &tos, &tos + c->size, c->stack, c->stack + c->size);
+	memcpy(c->stack, &tos, c->size);
+	//setjmp(c->c);
+	//printf("c: %i\n", c);
+	
+	if (setjmp(c->c))
 	{
-		printf("returning from slumber\n");
-		return c->ret;
+		//printf("returning from slumber\n");
+		//printf("ret: ");
+		print(perm.ret);
+		//printf("\n");
+		return perm.ret;
 	}
 	else
 	{
-		c->s = 1;
-		printf("initial return\n");
+	//	c->s = 1;
+		//printf("initial return\n");
 		return apply(cfun(arg), ccons(newcons(catom(c), NULL)), n);
 	}
 }
