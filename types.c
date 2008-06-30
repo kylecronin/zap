@@ -24,17 +24,18 @@ atom *newbool(int val) {
 
 typedef struct acont {
 	atom t;
-	jmp_buf c;
-	int s;
-	atom *ret;
-	char *stack;
+	char *stack, *respt;
 	int size;
+	jmp_buf registers;
 } acont;
 
-acont *newcont() {
+acont *newcont(char *respt) {
 	acont *ret = malloc(sizeof(acont));
 	ret->t = tcont;
-	ret->s = 0;
+	ret->size = bos - respt;
+	ret->stack = malloc(ret->size);
+	ret->respt = respt;
+	//memcpy(ret->stack, respt, ret->size);
 	return ret;
 }
 

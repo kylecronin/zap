@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>bootstrap.scm</string>
+	<string>testing/nondet.scm</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,43 +21,180 @@
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
+		<key>NOTES</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>35</integer>
+				<key>line</key>
+				<integer>257</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>245</integer>
+		</dict>
 		<key>axioms.c</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>14</integer>
+				<integer>25</integer>
 				<key>line</key>
-				<integer>82</integer>
+				<integer>542</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>55</integer>
+			<integer>516</integer>
 		</dict>
 		<key>bootstrap.scm</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
+				<integer>14</integer>
+				<key>line</key>
+				<integer>68</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>34</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>62</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>14</integer>
+				<key>line</key>
+				<integer>68</integer>
+			</dict>
+		</dict>
+		<key>operators.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
 				<integer>1</integer>
 				<key>line</key>
-				<integer>8</integer>
+				<integer>30</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>74</integer>
+		</dict>
+		<key>parse.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>33</integer>
+				<key>line</key>
+				<integer>111</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>testing/nondet.scm</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>17</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>testing/test.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>17</integer>
+				<key>line</key>
+				<integer>85</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>42</integer>
+		</dict>
+		<key>types.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>37</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>189</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>40</integer>
+				<key>line</key>
+				<integer>37</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>37</integer>
+			</dict>
+		</dict>
+		<key>zap.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>24</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>7</integer>
+		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>axioms.c</string>
+		<string>operators.c</string>
+		<string>testing/nondet.scm</string>
+		<string>parse.c</string>
+		<string>types.c</string>
 		<string>bootstrap.scm</string>
+		<string>testing/test.c</string>
+		<string>zap.c</string>
+		<string>NOTES</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{333, 85}, {937, 917}}</string>
+	<string>{{278, 85}, {794, 693}}</string>
 </dict>
 </plist>

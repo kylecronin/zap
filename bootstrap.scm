@@ -41,15 +41,36 @@
 						(+ (mfib (- x 1)) (mfib (- x 2)))))
 					equal?))
 
-(define def define)
-
-(define testc 
-	(begin
-		(load "test.scm")
-		cube))
 		
 (define (reload) (load "bootstrap.scm"))
 
 (define t 'temp)
 
 (define (go) (+ 1 (call/cc (lambda (c) (set! t c) 1))))
+
+(define (append a b)
+	(if (null? a)
+		b
+		(cons (car a)
+			(append (cdr a) b))))
+			
+(define (map fun lst)
+	(if (null? lst)
+		'()
+		(cons (fun (car lst))
+			(map fun (cdr lst)))))
+			
+
+			
+(define mondo-bizarro
+	(let ((k (call/cc (lambda (c) c))))
+	  (print 1)
+	  (call/cc (lambda (c) (k c)))
+	  (print 2)
+	  (call/cc (lambda (c) (k c)))
+	  (print 3)))
+
+		
+			
+			
+(load "testing/nondet.scm")

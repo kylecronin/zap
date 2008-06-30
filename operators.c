@@ -1,7 +1,12 @@
 atom *begin(acons*, nspace*);
 
 atom *lookup(nspace *search, asym *name) {
-	if (!search) return NULL;
+	if (!search)
+	{
+		printf("lookup of %s failed\n", name->s);
+		exit(1);
+		return NULL;
+	}
 	if (eq(catom(name), catom(search->name)))
 		return search->link;
 	return lookup(search->head, name);
@@ -12,22 +17,30 @@ atom* apply (afun*, acons*, nspace*);
 atom* eval (atom*, nspace*);
 atom* evallist (acons*, nspace*);
 
-acont perm;
+atom *contperm;
 
 atom *icont(acont *c, atom *ret) {
-	perm = *c;
-//	printf("cont called\n");
-	perm.ret = ret;
-//	printf("ret: ");
-//	print(ret);
-//	printf("\n");
-//	printf("jmp_buf: %i\n", perm.c);
-//	printf("copying from (%i, %i) to (%i, %i)\n", c->stack, c->stack + c->size, bos-(c->size), bos);
-	memcpy(bos-perm.size, perm.stack, perm.size);
-//	printf("jumping back\n");
-//	printf("jmp_buf: %i\n", perm.c);
-	longjmp(perm.c, 0);
-//	printf("shouldn't get here\n");
+	char tos;
+	if (c->respt < &tos)
+		return icont(c, ret);
+	
+	//static acont *perm;
+	// perm = c;
+	contperm = ret;
+	// needs to be replaced
+	 printf("re-entering continuation, preparing to copy stack\n");
+	int size = c->size;
+	char *from = c->stack, *to = c->respt;
+	while (size--)
+		*(to++) = *(from++);
+	//memcpy(to, from, size);
+		
+//	printf("stack copy complete, longjmping\n");
+	
+		
+	
+	//memcpy(c->respt, c->stack, c->size);
+	longjmp(c->registers, 0);
 }
 
 atom *apply (afun *fn, acons *args, nspace *n) {
@@ -69,15 +82,14 @@ atom *apply (afun *fn, acons *args, nspace *n) {
 	up to the individual operation. how will this work?
 **/
 atom *eval (atom *expr, nspace *n) {
+	char tos;
+	//printf("eval tos: %i\n", &tos);
+	
+	if (debug) {
+		printf("eval ["); print(expr); printf("]\n");
+	}
+	
 	if (!expr) return expr;
-	
-	
-	printf("eval [");
-	print(expr);
-	printf("]");
-
-	printf("\n"); 
-	
 	
 	acons *c;
 	atom *o;

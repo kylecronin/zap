@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 char *bos;
+int debug;
 
 //#include "types.c"
 #include "parse.c"
@@ -18,11 +19,14 @@ char *bos;
 
 **/
 
-
+					// why is this const?
 int main (int argc, const char * argv[]) {
 	char bosv;
 	bos = &bosv;
-	printf("bos: %i\n", bos);
+	//printf("bos: %i\n", bos);
+	
+	if (!strcmp(argv[1], "-d"))
+		debug = 1;
 	
 	char buff[8192];
 	char *p;
@@ -63,6 +67,7 @@ int main (int argc, const char * argv[]) {
 	n = define(n, csym(newsym("load")), newax(load));
 	n = define(n, csym(newsym("not")), newax(not));
 	n = define(n, csym(newsym("and")), newax(and));
+	n = define(n, csym(newsym("eq?")), newax(realeq));
 	
 	printf("zap -- western flyer\n");
 	

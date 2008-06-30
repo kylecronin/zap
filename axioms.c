@@ -212,8 +212,8 @@ atom *add(acons *args, nspace *n) {
 		return newint(0);
 
 	aint *car = cint(eval(args->car, n));
-	printf("+: back\n");
-	printf("+: val is %i\n", car->i);
+	//printf("+: back\n");
+	//printf("+: val is %i\n", car->i);
 	aint *cdr = cint(add(ccons(args->cdr), n));
 	
 	if (car && cdr)
@@ -470,8 +470,8 @@ char *cstack (char *bottom, char *top) {
 }
 
 atom *callcc(acons *args, nspace *n) {
-	acont *c = newcont();
 	char tos;
+	atom *ret;
 	
 	if (lengthhelp(args) != 1) {
 		printf("call/cc: expected 1 argument\n");
@@ -485,21 +485,23 @@ atom *callcc(acons *args, nspace *n) {
 		return NULL;
 	}
 	
+	acont *c = newcont(&tos);
+	// needs to be replaced
+	int size = c->size;
+	char *from = &tos, *to = c->stack;
+	while (size--)
+		*(to++) = *(from++);
 	
-	c->size = bos - &tos;
-	c->stack = malloc(c->size);
-	printf("copying from (%i, %i) to (%i, %i)\n", &tos, &tos + c->size, c->stack, c->stack + c->size);
-	memcpy(c->stack, &tos, c->size);
-	//setjmp(c->c);
-	//printf("c: %i\n", c);
+	//memcpy(c->stack, &tos, c->size);
 	
-	if (setjmp(c->c))
+	if (setjmp(c->registers))
 	{
-		//printf("returning from slumber\n");
-		//printf("ret: ");
-		print(perm.ret);
-		//printf("\n");
-		return perm.ret;
+		return contperm;
+		printf("returning from slumber\n");
+		printf("ret: ");
+		print(contperm);
+		printf("\n");
+		//ret = contperm;
 	}
 	else
 	{
@@ -507,6 +509,9 @@ atom *callcc(acons *args, nspace *n) {
 		//printf("initial return\n");
 		return apply(cfun(arg), ccons(newcons(catom(c), NULL)), n);
 	}
+	
+	//printf("got here\n");
+	return contperm;
 }
 
 atom *lt(acons *args, nspace *n) {
@@ -531,6 +536,12 @@ atom *load(acons *args, nspace *n) {
 	return NULL;
 }
 
+atom *realeq(acons *args, nspace *n) {
+	atom *a = args->car;
+	atom *b = ccons(args->cdr)->car;
+	
+	return newbool(eq(a, b));
+}
 
 
 
