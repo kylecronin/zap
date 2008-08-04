@@ -25,7 +25,7 @@ int main (int argc, const char * argv[]) {
 	bos = &bosv;
 	//printf("bos: %i\n", bos);
 	
-	if (!strcmp(argv[1], "-d"))
+	if (argc > 1 && !strcmp(argv[1], "-d"))
 		debug = 1;
 	
 	char buff[8192];

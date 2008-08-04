@@ -1,6 +1,7 @@
 atom *begin(acons*, nspace*);
 
 atom *lookup(nspace *search, asym *name) {
+	//printf("starting lookup of %s\n", name->s);
 	if (!search)
 	{
 		printf("lookup of %s failed\n", name->s);
@@ -20,35 +21,26 @@ atom* evallist (acons*, nspace*);
 atom *contperm;
 
 atom *icont(acont *c, atom *ret) {
+	static int size;
+	static char *from, *to;
+	
 	char tos;
+	
 	if (c->respt < &tos)
 		return icont(c, ret);
 	
-	//static acont *perm;
-	// perm = c;
 	contperm = ret;
-	// needs to be replaced
-	 printf("re-entering continuation, preparing to copy stack\n");
-	int size = c->size;
-	char *from = c->stack, *to = c->respt;
+	size = c->size;
+	from = c->stack;
+	to = c->respt;
+	
 	while (size--)
 		*(to++) = *(from++);
-	//memcpy(to, from, size);
-		
-//	printf("stack copy complete, longjmping\n");
-	
-		
-	
-	//memcpy(c->respt, c->stack, c->size);
+
 	longjmp(c->registers, 0);
 }
 
-atom *apply (afun *fn, acons *args, nspace *n) {
-	
-	/*printf("apply ["); print(catom(fn)); printf("]");
-	printf(" to ["); print(catom(args)); printf("]");
-	printf(" in ["); printns(n); printf("]"); printf("\n");*/
-	
+atom *apply (afun *fn, acons *args, nspace *n) {	
 	nspace *x = fn->n;
 	if (args)
 		if (*(fn->args) == tsym)
@@ -111,8 +103,6 @@ atom *eval (atom *expr, nspace *n) {
 					return (cax(o)->a)(ccons(c->cdr), n);
 				case tcont:
 					return icont((acont *) o, eval(ccons(c->cdr)->car, n));
-				
-				
 			}
 			break;
 		case tsym:

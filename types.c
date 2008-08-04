@@ -209,9 +209,13 @@ afun *cfun(atom *x) {
 
 
 int eq(atom *a, atom *b) {
+	printf("eq called\n");
+	
 	if (!a || !b)
 		return !a && !b;
 	if (*a != *b) return 0;
+	
+	asym *x, *y;
 	
 	switch (*a) {
 		
@@ -220,7 +224,9 @@ int eq(atom *a, atom *b) {
 		case tchar:
 			return cchar(a)->c == cchar(b)->c;
 		case tsym:
-			return !strcmp(csym(a)->s, csym(b)->s);
+			x = csym(a);
+			y = csym(b);
+			return !strcmp(x->s, y->s);
 		default:
 			return a == b;
 	}

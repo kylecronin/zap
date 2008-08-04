@@ -441,10 +441,16 @@ atom *equal(acons *args, nspace *n) {
 }
 
 atom *sprint(acons *args, nspace *n) {
+	//printf("sprint called\n");
 	if (args)
 	{
+		//printf("lblb\n");
 		print(eval(args->car, n));
 		return sprint(ccons(args->cdr), n);
+	}
+	else
+	{
+		printf("\n");
 	}
 	return NULL;
 }
@@ -471,7 +477,7 @@ char *cstack (char *bottom, char *top) {
 
 atom *callcc(acons *args, nspace *n) {
 	char tos;
-	atom *ret;
+	//atom *ret;
 	
 	if (lengthhelp(args) != 1) {
 		printf("call/cc: expected 1 argument\n");
@@ -537,10 +543,14 @@ atom *load(acons *args, nspace *n) {
 }
 
 atom *realeq(acons *args, nspace *n) {
-	atom *a = args->car;
-	atom *b = ccons(args->cdr)->car;
+	atom *a = eval(args->car, n);
+	atom *b = eval(ccons(args->cdr)->car, n);
+	int result;
+	printf("computing result\n");
+	result = eq(a, b);
+	printf("have result\n");
 	
-	return newbool(eq(a, b));
+	return newbool(result);
 }
 
 

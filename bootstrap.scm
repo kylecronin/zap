@@ -40,6 +40,8 @@
 						(if (< x 2) x
 						(+ (mfib (- x 1)) (mfib (- x 2)))))
 					equal?))
+					
+(define (list . args) args)
 
 		
 (define (reload) (load "bootstrap.scm"))
@@ -60,17 +62,8 @@
 		(cons (fun (car lst))
 			(map fun (cdr lst)))))
 			
+(define display print)
 
+(define call-with-current-continuation call/cc)
 			
-(define mondo-bizarro
-	(let ((k (call/cc (lambda (c) c))))
-	  (print 1)
-	  (call/cc (lambda (c) (k c)))
-	  (print 2)
-	  (call/cc (lambda (c) (k c)))
-	  (print 3)))
-
-		
-			
-			
-(load "testing/nondet.scm")
+(load "testing/mt.scm")
