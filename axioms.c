@@ -546,9 +546,9 @@ atom *realeq(acons *args, nspace *n) {
 	atom *a = eval(args->car, n);
 	atom *b = eval(ccons(args->cdr)->car, n);
 	int result;
-	printf("computing result\n");
+	//printf("computing result\n");
 	result = eq(a, b);
-	printf("have result\n");
+	//printf("have result\n");
 	
 	return newbool(result);
 }

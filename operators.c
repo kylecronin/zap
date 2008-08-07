@@ -21,6 +21,7 @@ atom* evallist (acons*, nspace*);
 atom *contperm;
 
 atom *icont(acont *c, atom *ret) {
+	//printf("icont called\n");
 	static int size;
 	static char *from, *to;
 	
@@ -86,8 +87,11 @@ atom *eval (atom *expr, nspace *n) {
 	acons *c;
 	atom *o;
 	
+	//printf("eval A\n");
+	
 	switch (*expr) {
 		case tcons:
+			//printf("eval B\n");
 			c = (acons *) expr;
 			o = eval(c->car, n);
 			if (!o)
@@ -95,21 +99,36 @@ atom *eval (atom *expr, nspace *n) {
 				printf("invalid procedure: null\n");
 				return NULL;
 			}
+		//	printf("eval C\n");
+			atom *xyz;
 			switch (*o)
 			{
 				case tfun: case tmac:
+					//printf("eval D\n");
 					return apply((afun *) o, ccons(c->cdr), n);
 				case tax:
+					//printf("eval E\n");
 					return (cax(o)->a)(ccons(c->cdr), n);
 				case tcont:
-					return icont((acont *) o, eval(ccons(c->cdr)->car, n));
+					//printf("eval F\n");
+					if (!c->cdr)
+					{
+						printf("continuation requires an argument to return\n");
+						exit(0);
+					}
+					xyz = eval(ccons(c->cdr)->car, n);
+					//printf("eval J\n");
+					return icont((acont *) o, xyz);
 			}
 			break;
 		case tsym:
+			//printf("eval G\n");
 			return lookup(n, (asym *) expr);
 		default:
+			//printf("eval H\n");
 			return expr;
 	}
+	//printf("eval I\n");
 }
 
 atom *evallist (acons *list, nspace *n) {

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>testing/nondet.scm</string>
+	<string>axioms.c</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -40,58 +40,42 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>3</integer>
 				<key>line</key>
-				<integer>516</integer>
+				<integer>550</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>506</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>34</integer>
-				<key>line</key>
-				<integer>516</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>516</integer>
-			</dict>
+			<integer>527</integer>
 		</dict>
 		<key>bootstrap.scm</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>62</integer>
+				<integer>43</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>36</integer>
+			<integer>22</integer>
 		</dict>
 		<key>operators.c</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>3</integer>
 				<key>line</key>
-				<integer>89</integer>
+				<integer>23</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>74</integer>
+			<integer>5</integer>
 		</dict>
 		<key>parse.c</key>
 		<dict>
@@ -107,19 +91,19 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>testing/nondet.scm</key>
+		<key>testing/mt.scm</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>19</integer>
 				<key>line</key>
-				<integer>42</integer>
+				<integer>35</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>3</integer>
+			<integer>21</integer>
 		</dict>
 		<key>testing/test.c</key>
 		<dict>
@@ -142,28 +126,12 @@
 				<key>column</key>
 				<integer>3</integer>
 				<key>line</key>
-				<integer>37</integer>
+				<integer>211</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>189</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>40</integer>
-				<key>line</key>
-				<integer>37</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>3</integer>
-				<key>line</key>
-				<integer>37</integer>
-			</dict>
+			<integer>202</integer>
 		</dict>
 		<key>zap.c</key>
 		<dict>
@@ -177,14 +145,14 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>37</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>axioms.c</string>
 		<string>operators.c</string>
-		<string>testing/nondet.scm</string>
+		<string>testing/mt.scm</string>
 		<string>parse.c</string>
 		<string>types.c</string>
 		<string>bootstrap.scm</string>
@@ -195,6 +163,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{311, 85}, {794, 693}}</string>
+	<string>{{281, 85}, {794, 693}}</string>
 </dict>
 </plist>

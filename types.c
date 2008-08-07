@@ -209,7 +209,7 @@ afun *cfun(atom *x) {
 
 
 int eq(atom *a, atom *b) {
-	printf("eq called\n");
+	//printf("eq called\n");
 	
 	if (!a || !b)
 		return !a && !b;

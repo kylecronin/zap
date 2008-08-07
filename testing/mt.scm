@@ -30,7 +30,9 @@
   (display "context switching\n")
   (call-with-current-continuation
    (lambda (cc)
-     (enqueue cc)
+     (enqueue
+	(lambda ()
+		(cc 'nothing)))
      ((dequeue)))))
 
 (define (end-process)
